@@ -9,6 +9,7 @@ interface AccountViewProps {
   onUpdateUser: (updated: UserProfile) => void;
   cycleSettings: CycleSettings;
   logsCount: number;
+  onOpenAuthModal?: (mode: 'welcome' | 'login' | 'signup' | 'logoutConfirm' | 'profile') => void;
 }
 
 export const AccountView: React.FC<AccountViewProps> = ({
@@ -16,8 +17,9 @@ export const AccountView: React.FC<AccountViewProps> = ({
   onUpdateUser,
   cycleSettings,
   logsCount,
+  onOpenAuthModal,
 }) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [isExporting, setIsExporting] = useState(false);
   const [exportDone, setExportDone] = useState(false);
 
@@ -41,21 +43,25 @@ export const AccountView: React.FC<AccountViewProps> = ({
     setTimeout(() => setExportDone(false), 3000);
   };
 
-  const handleToggleAuthMode = () => {
-    if (user.isGuest) {
-      onUpdateUser({
-        ...user,
-        isGuest: false,
-        name: 'Aditi',
-        email: 'aditiclearwitssih@gmail.com',
-      });
+  const handleAuthAction = () => {
+    if (onOpenAuthModal) {
+      onOpenAuthModal(user.isGuest ? 'welcome' : 'logoutConfirm');
     } else {
-      onUpdateUser({
-        ...user,
-        isGuest: true,
-        name: t.guestUser,
-        email: '',
-      });
+      if (user.isGuest) {
+        onUpdateUser({
+          ...user,
+          isGuest: false,
+          name: 'Aditi',
+          email: 'aditiclearwitssih@gmail.com',
+        });
+      } else {
+        onUpdateUser({
+          ...user,
+          isGuest: true,
+          name: t.guestUser,
+          email: '',
+        });
+      }
     }
   };
 
@@ -90,10 +96,14 @@ export const AccountView: React.FC<AccountViewProps> = ({
 
           <button
             type="button"
-            onClick={handleToggleAuthMode}
-            className="px-4 py-2 rounded-full text-xs font-semibold transition-all border border-[#ECCACF] bg-[#FFF9F6] hover:bg-[#FCEEE9] text-[#5C2E38]"
+            onClick={handleAuthAction}
+            className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+              user.isGuest
+                ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-xs hover:scale-105'
+                : 'border border-[#ECCACF] bg-[#FFF9F6] hover:bg-[#FCEEE9] text-[#5C2E38]'
+            }`}
           >
-            {user.isGuest ? t.continueWithGoogle : t.signOut}
+            {user.isGuest ? (language === 'hi' ? 'साइन इन / रजिस्टर 🌸' : 'Sign In / Register 🌸') : t.signOut}
           </button>
         </div>
 
