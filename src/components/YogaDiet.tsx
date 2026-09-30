@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from '../i18n/context';
 import { CyclePhase } from '../types/cycle';
-import { Play, Sparkles, Utensils, Heart, Activity, Check } from 'lucide-react';
+import { Play, Sparkles, Utensils, Heart, Activity, Check, ExternalLink } from 'lucide-react';
 
 interface YogaSession {
   phase: CyclePhase;
@@ -15,42 +15,42 @@ interface YogaSession {
 
 export const YogaDiet: React.FC = () => {
   const { t, language } = useTranslation();
-  const [activeVideoId, setActiveVideoId] = useState<string>('1pL1s713Psc');
+  const [activeVideoId, setActiveVideoId] = useState<string>('4JaCcp39iVI');
 
   const yogaSessions: YogaSession[] = [
     {
       phase: 'menstrual',
       title: 'Gentle Restorative Yoga for Period Cramps & Lower Back Relief',
-      duration: '15 mins',
-      instructor: 'Dr. Neha / Gentle Asanas',
-      youtubeId: '1pL1s713Psc',
+      duration: '21 mins',
+      instructor: 'Yoga With Adriene',
+      youtubeId: '4JaCcp39iVI',
       poses: ['Balasana (Child’s Pose)', 'Supta Baddha Konasana (Reclined Butterfly)', 'Apanasana (Knees to Chest)'],
       focusBenefit: 'Releases deep pelvic congestion, reduces prostaglandins, and relaxes uterine wall tension.',
     },
     {
       phase: 'follicular',
-      title: 'Energizing Morning Surya Namaskar & Hormone Awakening Flow',
-      duration: '20 mins',
-      instructor: 'Vinyasa Flow Harmony',
-      youtubeId: 'b1H3xO3x_Js',
+      title: 'Energizing Morning Yoga Stretch & Hormone Awakening Flow',
+      duration: '10 mins',
+      instructor: 'Yoga with Kassandra',
+      youtubeId: 'BPRE9o1cEgk',
       poses: ['Surya Namaskar (Sun Salutations)', 'Warrior II', 'Cobra Pose (Bhujangasana)'],
       focusBenefit: 'Stimulates lymphatic drainage, boosts rising estrogen, and elevates morning mood.',
     },
     {
       phase: 'ovulatory',
-      title: 'Radiant Vitality & Core Strength Flow',
-      duration: '25 mins',
-      instructor: 'Power Shakti Yoga',
-      youtubeId: 'inpok4MKVLM',
+      title: 'Radiant Vitality & Movement Energy Practice',
+      duration: '18 mins',
+      instructor: 'Yoga With Adriene',
+      youtubeId: 'F47hdaNXwT4',
       poses: ['Utkatasana (Chair Pose)', 'Navasana (Boat Pose)', 'Bridge Pose (Setu Bandhasana)'],
       focusBenefit: 'Harnesses peak metabolic energy, enhances stamina, and supports cardiovascular radiance.',
     },
     {
       phase: 'luteal',
       title: 'Grounding Evening Yin Yoga for PMS Calm & Sweet Sleep',
-      duration: '18 mins',
-      instructor: 'Mindful Moon Flow',
-      youtubeId: '3X0yU_Fm_C8',
+      duration: '22 mins',
+      instructor: 'The Yoga Ranger Studio',
+      youtubeId: 'FYohLlJUYAo',
       poses: ['Viparita Karani (Legs Up the Wall)', 'Paschimottanasana (Seated Forward Bend)', 'Shavasana'],
       focusBenefit: 'Balances progesterone shifts, calms irritability and water retention, and lowers cortisol.',
     },
@@ -89,6 +89,10 @@ export const YogaDiet: React.FC = () => {
     },
   ];
 
+  const handleOpenYouTube = (id: string) => {
+    window.open(`https://www.youtube.com/watch?v=${id}`, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <div className="max-w-5xl mx-auto space-y-10 animate-in fade-in duration-300">
       {/* Header */}
@@ -103,7 +107,7 @@ export const YogaDiet: React.FC = () => {
 
       {/* Main Active Yoga Video Player */}
       <div className="bg-white/80 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-[#F4DFE2] shadow-sm space-y-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
             <h3 className="font-serif text-xl font-bold text-[#4A1E29] flex items-center gap-2">
               <Play className="w-5 h-5 text-rose-500 fill-rose-500" />
@@ -113,20 +117,44 @@ export const YogaDiet: React.FC = () => {
               Duration: {currentYoga.duration} • {currentYoga.instructor}
             </p>
           </div>
-          <span className="text-xs font-bold uppercase tracking-wider bg-rose-100 text-rose-800 px-3 py-1 rounded-full border border-rose-300">
-            {currentYoga.phase} Phase
-          </span>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs font-bold uppercase tracking-wider bg-rose-100 text-rose-800 px-3 py-1 rounded-full border border-rose-300">
+              {currentYoga.phase} Phase
+            </span>
+            <button
+              type="button"
+              onClick={() => handleOpenYouTube(activeVideoId)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-2xs transition-all active:scale-95"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              <span>Watch on YouTube ↗</span>
+            </button>
+          </div>
         </div>
 
         {/* Video Iframe Container */}
         <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-md bg-neutral-900 border border-black/10">
           <iframe
+            key={activeVideoId}
             src={`https://www.youtube-nocookie.com/embed/${activeVideoId}?rel=0&modestbranding=1`}
             title={currentYoga.title}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             className="w-full h-full object-cover"
           />
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-[#7A4B55]">
+          <p className="italic">
+            Recommended gentle sequence to release pelvic congestion and calm hormonal fluctuations.
+          </p>
+          <button
+            type="button"
+            onClick={() => handleOpenYouTube(activeVideoId)}
+            className="text-rose-600 hover:text-rose-800 font-semibold underline text-[11px]"
+          >
+            Video not loading? Open in YouTube app ↗
+          </button>
         </div>
 
         <div className="p-4 rounded-2xl bg-[#FFF6F3] border border-[#F5D8DF] text-xs text-[#522530] space-y-1">
@@ -170,21 +198,33 @@ export const YogaDiet: React.FC = () => {
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setActiveVideoId(session.youtubeId);
-                  window.scrollTo({ top: 380, behavior: 'smooth' });
-                }}
-                className={`w-full py-2 rounded-full text-xs font-semibold transition-all active:scale-95 flex items-center justify-center gap-1.5 ${
-                  isSelected
-                    ? 'bg-rose-600 text-white shadow-xs'
-                    : 'bg-[#FFF9F6] text-rose-700 hover:bg-rose-100 border border-rose-200'
-                }`}
-              >
-                <Play className="w-3.5 h-3.5 fill-current" />
-                <span>{isSelected ? 'Currently Playing' : 'Start Practice'}</span>
-              </button>
+              <div className="flex items-center gap-1.5 pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveVideoId(session.youtubeId);
+                    window.scrollTo({ top: 380, behavior: 'smooth' });
+                  }}
+                  className={`flex-1 py-2 rounded-full text-xs font-semibold transition-all active:scale-95 flex items-center justify-center gap-1.5 ${
+                    isSelected
+                      ? 'bg-rose-600 text-white shadow-xs'
+                      : 'bg-[#FFF9F6] text-rose-700 hover:bg-rose-100 border border-rose-200'
+                  }`}
+                >
+                  <Play className="w-3.5 h-3.5 fill-current" />
+                  <span>{isSelected ? 'Currently Playing' : 'Start Practice'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleOpenYouTube(session.youtubeId)}
+                  className="p-2 rounded-full text-rose-600 hover:bg-rose-50 border border-rose-200 transition-colors"
+                  title="Watch on YouTube"
+                  aria-label="Watch on YouTube"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
           );
         })}

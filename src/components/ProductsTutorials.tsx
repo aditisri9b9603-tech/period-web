@@ -16,7 +16,7 @@ interface ProductItem {
 
 export const ProductsTutorials: React.FC = () => {
   const { t } = useTranslation();
-  const [activeVideoId, setActiveVideoId] = useState<string>('q1xQx796g18');
+  const [activeVideoId, setActiveVideoId] = useState<string>('CbbhxZQA1ps');
 
   const products: ProductItem[] = [
     {
@@ -26,7 +26,7 @@ export const ProductsTutorials: React.FC = () => {
       description: '100% hypoallergenic medical silicone, 12-hour leak-free protection, zero plastic waste, and comfortable wear.',
       badge: 'Bestseller • Reusable 5+ Years',
       highlights: ['Zero rash or dryness', '12 hours uninterrupted protection', 'Safe for swimming & yoga'],
-      youtubeVideoId: 'q1xQx796g18',
+      youtubeVideoId: 'CbbhxZQA1ps',
       tutorialTitle: 'How to Fold & Insert a Menstrual Cup Easily for Beginners',
       icon: '🌸',
     },
@@ -37,8 +37,8 @@ export const ProductsTutorials: React.FC = () => {
       description: 'Pure chemical-free organic cotton top sheet with breathable bamboo fiber core. No synthetic fragrances or chlorine bleaching.',
       badge: '100% Biodegradable',
       highlights: ['Ultra-thin with high absorbency', 'Hypoallergenic & anti-chafing', 'Comes in discreet biodegradable wrappers'],
-      youtubeVideoId: 'QZJ6M6V2bKk',
-      tutorialTitle: 'Choosing the Right Pad & Preventing Leaks Comfortably',
+      youtubeVideoId: 'X4aSv3Qhd0E',
+      tutorialTitle: 'How to Use a Pad & Prevent Leaks Comfortably',
       icon: '🌿',
     },
     {
@@ -48,8 +48,8 @@ export const ProductsTutorials: React.FC = () => {
       description: 'Infused with cooling peppermint, wintergreen, eucalyptus, and lavender essentials oils for instant topical cramp relief.',
       badge: 'Fast Acting • 100% Natural',
       highlights: ['Non-greasy roll-on applicator', 'Fast transdermal absorption', 'Calms uterine spasms without pills'],
-      youtubeVideoId: 'U_Yw0CjI854',
-      tutorialTitle: 'Where and How to Apply Cramp Relief Essential Oil Roll-On',
+      youtubeVideoId: 'LIsYbDCMfDc',
+      tutorialTitle: 'Immediate Relief Postures & Herbal Home Remedies for Cramps',
       icon: '🌱',
     },
     {
@@ -59,11 +59,17 @@ export const ProductsTutorials: React.FC = () => {
       description: 'Self-heating adhesive patches providing 8 continuous hours of gentle 40°C thermal therapy to loosen tight lower belly muscles.',
       badge: '8 Hours Warmth',
       highlights: ['Ultra-thin and invisible under clothes', 'Air activated within 5 minutes', 'Natural mineral & iron heating core'],
-      youtubeVideoId: 'b7VnE59W_98',
-      tutorialTitle: 'How to Wear Heat Patches for Pelvic & Lower Back Ache',
+      youtubeVideoId: 'Bipn51mxSbM',
+      tutorialTitle: 'Home Remedies & Heat Therapy for Menstrual Cramps',
       icon: '🔥',
     },
   ];
+
+  const handleOpenYouTube = (id: string) => {
+    window.open(`https://www.youtube.com/watch?v=${id}`, '_blank', 'noopener,noreferrer');
+  };
+
+  const currentProduct = products.find((p) => p.youtubeVideoId === activeVideoId) || products[0];
 
   return (
     <div className="max-w-5xl mx-auto space-y-10 animate-in fade-in duration-300">
@@ -79,29 +85,50 @@ export const ProductsTutorials: React.FC = () => {
 
       {/* Main Active YouTube Tutorial Player */}
       <div className="bg-white/80 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-[#F4DFE2] shadow-sm space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="font-serif text-xl font-bold text-[#4A1E29] flex items-center gap-2">
-            <Play className="w-5 h-5 text-rose-500 fill-rose-500" />
-            <span>Interactive Video Tutorial</span>
-          </h3>
-          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-rose-50 text-rose-800 border border-rose-200">
-            Verified Educational Guide
-          </span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 className="font-serif text-xl font-bold text-[#4A1E29] flex items-center gap-2">
+              <Play className="w-5 h-5 text-rose-500 fill-rose-500" />
+              <span>{currentProduct.tutorialTitle}</span>
+            </h3>
+            <span className="text-xs font-semibold px-3 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200 mt-1 inline-block">
+              Verified Educational Guide • {currentProduct.name}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => handleOpenYouTube(activeVideoId)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-2xs transition-all active:scale-95 flex-shrink-0"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            <span>Watch on YouTube ↗</span>
+          </button>
         </div>
 
         {/* Video Iframe Container */}
         <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-md bg-neutral-900 border border-black/10">
           <iframe
+            key={activeVideoId}
             src={`https://www.youtube-nocookie.com/embed/${activeVideoId}?rel=0&modestbranding=1`}
-            title="Sakhi Cycle Video Tutorial"
+            title={currentProduct.tutorialTitle}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             className="w-full h-full object-cover"
           />
         </div>
-        <p className="text-xs text-[#7A4B55] italic text-center">
-          Tap on any product guide below to switch the video player tutorial.
-        </p>
+        <div className="flex items-center justify-between text-xs text-[#7A4B55]">
+          <p className="italic">
+            Tap on any product guide below to switch the video player tutorial.
+          </p>
+          <button
+            type="button"
+            onClick={() => handleOpenYouTube(activeVideoId)}
+            className="text-rose-600 hover:text-rose-800 font-semibold underline text-[11px]"
+          >
+            Video not loading? Open in YouTube app ↗
+          </button>
+        </div>
       </div>
 
       {/* Curated Product Cards */}
@@ -149,23 +176,35 @@ export const ProductsTutorials: React.FC = () => {
 
               {/* Video Watch Trigger */}
               <div className="pt-3 border-t border-pink-100 flex items-center justify-between gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveVideoId(item.youtubeVideoId);
-                    window.scrollTo({ top: 400, behavior: 'smooth' });
-                  }}
-                  className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all active:scale-95 ${
-                    isSelected
-                      ? 'bg-rose-600 text-white shadow-xs'
-                      : 'bg-white hover:bg-rose-50 text-rose-700 border border-rose-200'
-                  }`}
-                >
-                  <Play className="w-3.5 h-3.5 fill-current" />
-                  <span>{isSelected ? 'Now Playing Above' : 'Watch How to Use'}</span>
-                </button>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveVideoId(item.youtubeVideoId);
+                      window.scrollTo({ top: 400, behavior: 'smooth' });
+                    }}
+                    className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all active:scale-95 ${
+                      isSelected
+                        ? 'bg-rose-600 text-white shadow-xs'
+                        : 'bg-white hover:bg-rose-50 text-rose-700 border border-rose-200'
+                    }`}
+                  >
+                    <Play className="w-3.5 h-3.5 fill-current" />
+                    <span>{isSelected ? 'Playing' : 'Play'}</span>
+                  </button>
 
-                <span className="text-[11px] text-[#A66F7B]">Doctor approved</span>
+                  <button
+                    type="button"
+                    onClick={() => handleOpenYouTube(item.youtubeVideoId)}
+                    className="p-1.5 rounded-full text-rose-600 hover:bg-rose-50 transition-colors"
+                    title="Watch directly on YouTube"
+                    aria-label="Watch directly on YouTube"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <span className="text-[11px] text-[#A66F7B]">Verified Guide</span>
               </div>
             </div>
           );

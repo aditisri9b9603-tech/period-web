@@ -5,6 +5,7 @@ import { SakhiMusic } from './SakhiMusic';
 import { PeriodProductGuide } from './PeriodProductGuide';
 import { CompareProducts } from './CompareProducts';
 import { AnonymousForum } from './AnonymousForum';
+import { SakhiVideoHub } from './SakhiVideoHub';
 import {
   Sparkles,
   Stethoscope,
@@ -17,9 +18,10 @@ import {
   ShieldCheck,
   Headphones,
   ShoppingBag,
+  Video,
 } from 'lucide-react';
 
-export type ExploreSection = 'hub' | 'doctors' | 'music' | 'guide' | 'compare' | 'circle';
+export type ExploreSection = 'hub' | 'videos' | 'doctors' | 'music' | 'guide' | 'compare' | 'circle';
 
 interface ExploreHubProps {
   initialSection?: ExploreSection;
@@ -40,6 +42,18 @@ export const ExploreHub: React.FC<ExploreHubProps> = ({
   };
 
   const exploreItems = [
+    {
+      id: 'videos' as ExploreSection,
+      emoji: '🌸',
+      title: 'Sakhi Videos',
+      hindiTitle: 'सखी वीडियो हब',
+      subtitle: 'Verified period health, PCOS, hygiene & pain relief guides',
+      hindiSubtitle: 'सत्यापित पीरियड स्वास्थ्य, पीसीओएस, स्वच्छता और दर्द निवारक वीडियो',
+      accent: 'from-pink-500 to-rose-600',
+      bgGlow: 'bg-rose-50/80 border-rose-200/80',
+      badge: 'UNICEF & Clinic Verified',
+      badgeColor: 'text-rose-700 bg-rose-100/70 border-rose-200',
+    },
     {
       id: 'doctors' as ExploreSection,
       emoji: '🩺',
@@ -117,6 +131,19 @@ export const ExploreHub: React.FC<ExploreHubProps> = ({
         >
           <span>✨</span>
           <span>Explore All</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => handleSwitchSection('videos')}
+          className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
+            activeSection === 'videos'
+              ? 'bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-xs'
+              : 'text-[#6E3C48] hover:bg-pink-50'
+          }`}
+        >
+          <span>🌸</span>
+          <span>Sakhi Videos</span>
         </button>
 
         <button
@@ -256,6 +283,12 @@ export const ExploreHub: React.FC<ExploreHubProps> = ({
       )}
 
       {/* Sub-section views */}
+      {activeSection === 'videos' && (
+        <div className="animate-in fade-in duration-300">
+          <SakhiVideoHub />
+        </div>
+      )}
+
       {activeSection === 'doctors' && (
         <div className="animate-in fade-in duration-300">
           <FindGynac />
