@@ -643,7 +643,7 @@ function AppContent() {
       {/* ========================================================
           MAIN FULL-WIDTH RESPONSIVE DASHBOARD SANCTUARY (90-95% WIDTH)
       ======================================================== */}
-      <main className="flex-1 w-[94%] max-w-[1720px] mx-auto px-2 sm:px-4 lg:px-6 py-5 sm:py-8">
+      <main className="flex-1 w-[94%] max-w-[1720px] mx-auto px-2 sm:px-4 lg:px-6 py-5 sm:py-8 pb-24 lg:pb-8">
         {/* ======================================================
             TAB 1: FULL-SCREEN PINTEREST DASHBOARD (HOME)
         ====================================================== */}
@@ -1401,66 +1401,89 @@ function AppContent() {
         )}
       </main>
 
-      {/* Floating Bottom Nav for Mobile */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-[#F4DFE2] px-3 py-2 flex items-center justify-around shadow-lg">
+      {/* Sticky Bottom Nav for Mobile with Active Glow Indicator */}
+      <nav
+        aria-label="Mobile Navigation"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-t border-[#F4DFE2] px-2 py-2 flex items-center justify-around shadow-[0_-4px_24px_rgba(244,114,182,0.18)]"
+      >
         {/* 1. Home */}
         <button
           type="button"
           onClick={() => setActiveTab('home')}
-          className={`flex flex-col items-center gap-1 text-[10px] font-semibold transition-colors cursor-pointer ${
-            activeTab === 'home' ? 'text-[#A63A50] font-bold' : 'text-[#8A5A66]'
+          className={`relative flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-[10px] font-semibold transition-all cursor-pointer ${
+            activeTab === 'home'
+              ? 'text-[#A63A50] font-bold bg-pink-100/80 shadow-[0_0_12px_rgba(244,114,182,0.45)] ring-1 ring-pink-300/60'
+              : 'text-[#8A5A66] hover:text-[#A63A50]'
           }`}
         >
           <Activity className="w-4 h-4" />
           <span>Home</span>
+          {activeTab === 'home' && (
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.9)] animate-pulse" />
+          )}
         </button>
 
         {/* 2. Cycle */}
         <button
           type="button"
           onClick={() => setActiveTab('cycle')}
-          className={`flex flex-col items-center gap-1 text-[10px] font-semibold transition-colors cursor-pointer ${
-            ['cycle', 'calendar'].includes(activeTab) ? 'text-[#A63A50] font-bold' : 'text-[#8A5A66]'
+          className={`relative flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-[10px] font-semibold transition-all cursor-pointer ${
+            ['cycle', 'calendar'].includes(activeTab)
+              ? 'text-[#A63A50] font-bold bg-pink-100/80 shadow-[0_0_12px_rgba(244,114,182,0.45)] ring-1 ring-pink-300/60'
+              : 'text-[#8A5A66] hover:text-[#A63A50]'
           }`}
         >
           <Calendar className="w-4 h-4" />
           <span>Cycle</span>
+          {['cycle', 'calendar'].includes(activeTab) && (
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.9)] animate-pulse" />
+          )}
         </button>
 
         {/* 3. Sakhi AI */}
         <button
           type="button"
           onClick={() => setActiveTab('sakhiAi')}
-          className={`flex flex-col items-center gap-1 text-[10px] font-semibold transition-colors cursor-pointer ${
-            ['sakhiAi', 'talkToSakhi'].includes(activeTab) ? 'text-[#A63A50] font-bold' : 'text-[#8A5A66]'
+          className={`relative flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-[10px] font-semibold transition-all cursor-pointer ${
+            ['sakhiAi', 'talkToSakhi'].includes(activeTab)
+              ? 'text-[#A63A50] font-bold bg-pink-100/80 shadow-[0_0_12px_rgba(244,114,182,0.45)] ring-1 ring-pink-300/60'
+              : 'text-[#8A5A66] hover:text-[#A63A50]'
           }`}
         >
           <MessageCircleHeart className="w-4 h-4" />
           <span>Sakhi AI</span>
+          {['sakhiAi', 'talkToSakhi'].includes(activeTab) && (
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.9)] animate-pulse" />
+          )}
         </button>
 
         {/* 4. Play */}
         <button
           type="button"
           onClick={() => setActiveTab('play')}
-          className={`flex flex-col items-center gap-1 text-[10px] font-semibold transition-colors cursor-pointer ${
-            activeTab === 'play' ? 'text-[#A63A50] font-bold' : 'text-[#8A5A66]'
+          className={`relative flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-[10px] font-semibold transition-all cursor-pointer ${
+            activeTab === 'play'
+              ? 'text-[#A63A50] font-bold bg-pink-100/80 shadow-[0_0_12px_rgba(244,114,182,0.45)] ring-1 ring-pink-300/60'
+              : 'text-[#8A5A66] hover:text-[#A63A50]'
           }`}
         >
           <span className="text-sm leading-none">🎀</span>
           <span>Play</span>
+          {activeTab === 'play' && (
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.9)] animate-pulse" />
+          )}
         </button>
 
         {/* 5. More / Menu */}
         <button
           type="button"
           onClick={() => setIsMobileMenuOpen(true)}
-          className="flex flex-col items-center gap-1 text-[10px] font-semibold text-[#8A5A66] hover:text-[#A63A50] transition-colors cursor-pointer"
+          className="flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-[10px] font-semibold text-[#8A5A66] hover:text-[#A63A50] transition-colors cursor-pointer"
         >
           <Menu className="w-4 h-4" />
           <span>More</span>
         </button>
-      </div>
+      </nav>
 
       {/* Settings Modal */}
       <SettingsModal
