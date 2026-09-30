@@ -22,6 +22,18 @@ export interface TranslationDictionary {
   phaseGuide: string;
   symptoms: string;
   sakhiAi: string;
+  talkToSakhi: string;
+  forum: string;
+  buddy: string;
+  products: string;
+  findGynac: string;
+  sakhiMusic: string;
+  productGuide: string;
+  compareProducts: string;
+  moreCare: string;
+  yoga: string;
+  doctors: string;
+  vibes: string;
   insights: string;
   settings: string;
   signIn: string;
@@ -117,7 +129,20 @@ export interface TranslationDictionary {
   suggestedFoods: string;
   suggestedActivities: string;
 
-  // Sakhi AI Chat
+  // Talk to Sakhi (Didi/Bestie Voice AI)
+  talkToSakhiTitle: string;
+  talkToSakhiSub: string;
+  tapAndTalk: string;
+  listeningWave: string;
+  sakhiThinking: string;
+  sakhiSpeaking: string;
+  askByText: string;
+  justTalk: string;
+  talkToSakhiPlaceholder: string;
+  bestieBadge: string;
+  ventOrAsk: string;
+
+  // Sakhi AI Chat (Existing)
   sakhiChatTitle: string;
   sakhiChatSub: string;
   sakhiAiBadge: string;
@@ -143,6 +168,53 @@ export interface TranslationDictionary {
   clearChat: string;
   chatLanguagePrompt: string;
 
+  // Anonymous Forum
+  forumTitle: string;
+  forumSub: string;
+  createPost: string;
+  anonymousBadge: string;
+  postTopicLabel: string;
+  postContentPlaceholder: string;
+  postSubmit: string;
+  filterAll: string;
+  replies: string;
+  likeAction: string;
+
+  // Buddy System (WhatsApp)
+  buddyTitle: string;
+  buddySub: string;
+  whatsAppShareTitle: string;
+  notifyBuddy: string;
+  periodAlertMsg: string;
+  crampSosMsg: string;
+  cravingChaiMsg: string;
+  highEnergyMsg: string;
+
+  // Products & Video Tutorials
+  productsTitle: string;
+  productsSub: string;
+  videoTutorialsTitle: string;
+  watchTutorial: string;
+  buyOrLearn: string;
+
+  // Yoga & Diet Videos
+  yogaTitle: string;
+  yogaSub: string;
+  watchYogaPractice: string;
+  benefits: string;
+
+  // Doctor & Hospitals Directory
+  doctorsTitle: string;
+  doctorsSub: string;
+  verifiedSpecialist: string;
+  bookConsultation: string;
+  callHospital: string;
+
+  // Spotify Vibes
+  vibesTitle: string;
+  vibesSub: string;
+  listenPlaylist: string;
+
   // Insights & Calendar
   calendarTitle: string;
   calendarSub: string;
@@ -166,6 +238,9 @@ export interface TranslationDictionary {
 
   // Accessibility & UI common
   loading: string;
+  welcomeHaven: string;
+  bloomingSanctuary: string;
+  enterSanctuary: string;
   errorGeneric: string;
   retry: string;
   close: string;
@@ -184,12 +259,24 @@ export interface TranslationDictionary {
 export const translations: Record<SupportedLanguage, TranslationDictionary> = {
   en: {
     brandName: "Sakhi Cycle",
-    tagline: "Your Loving Menstrual & Hormonal Wellness Companion",
+    tagline: "Understand • Track • Thrive",
     home: "Today's Circle",
     cycleTracker: "Cycle Tracker",
     phaseGuide: "Phase Syncing",
     symptoms: "Daily Log",
     sakhiAi: "Sakhi AI",
+    talkToSakhi: "Talk to Sakhi 🌸",
+    forum: "Sisterhood Forum",
+    buddy: "Sakhi Buddy",
+    products: "Period Products 🩷",
+    findGynac: "Find a Gynac 🩺",
+    sakhiMusic: "Sakhi Music 🎵",
+    productGuide: "Product Guide",
+    compareProducts: "Compare & Buy",
+    moreCare: "More Care ▾",
+    yoga: "Yoga & Diet",
+    doctors: "Doctors & Clinics",
+    vibes: "Vibes & Spotify",
     insights: "Calendar & Trends",
     settings: "Settings",
     signIn: "Sign In",
@@ -280,6 +367,20 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     suggestedFoods: "Suggested Nutrient-Rich Foods",
     suggestedActivities: "Optimal Movement for This Phase",
 
+    // Talk to Sakhi (Voice Bestie)
+    talkToSakhiTitle: "Talk to Sakhi 🌸",
+    talkToSakhiSub: "Your sweetest supportive Indian bestie & Didi. Vent, ask questions, or just chat!",
+    tapAndTalk: "Tap & Talk 🎙️",
+    listeningWave: "Listening... 🎧",
+    sakhiThinking: "Sakhi is thinking... ✨",
+    sakhiSpeaking: "Sakhi is speaking... 💕",
+    askByText: "Ask by Text 💬",
+    justTalk: "Just Talk 🎙️",
+    talkToSakhiPlaceholder: "Type to your Sakhi bestie... (e.g. Aaj mood bahut kharab hai 🥺)",
+    bestieBadge: "Your Caring Voice Didi 💗",
+    ventOrAsk: "Vent, share your day, ask anything about your cycle or feelings.",
+
+    // Sakhi AI Chat
     sakhiChatTitle: "Sakhi AI Companion",
     sakhiChatSub: "Caring, confidential conversation for cycle health, nutrition, and comfort.",
     sakhiAiBadge: "AI Wellness Assistant • Not a Doctor",
@@ -305,6 +406,54 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     clearChat: "Clear Conversation",
     chatLanguagePrompt: "Sakhi replies warmly in your chosen language.",
 
+    // Forum
+    forumTitle: "Sisterhood Anonymous Forum",
+    forumSub: "A safe, gentle haven to ask questions, vent, and share love with fellow women.",
+    createPost: "Share in the Circle",
+    anonymousBadge: "100% Anonymous & Stigma-Free",
+    postTopicLabel: "Category",
+    postContentPlaceholder: "Share your heartfelt thoughts, questions or experiences anonymously...",
+    postSubmit: "Post to Sisterhood",
+    filterAll: "All Topics",
+    replies: "Replies",
+    likeAction: "Send Love 💗",
+
+    // Buddy System
+    buddyTitle: "Sakhi Buddy & WhatsApp Sync",
+    buddySub: "Keep your trusted sister, bestie, mom, or partner lovingly in the loop.",
+    whatsAppShareTitle: "Send Warm WhatsApp Check-in",
+    notifyBuddy: "Share via WhatsApp",
+    periodAlertMsg: "🌸 Hey Sakhi! My period just started today. Sending warm hugs and cozy vibes! 🩸🍫",
+    crampSosMsg: "🥺 Hey dear, feeling some cramps today. Resting with a warm water bottle and thinking of you! 💕",
+    cravingChaiMsg: "☕ Craving some hot ginger chai & dark chocolate in my luteal phase today! How are you feeling?",
+    highEnergyMsg: "✨ My follicular energy is blooming today! Let's catch up or take a refreshing walk together! 🌷",
+
+    // Products & Tutorials
+    productsTitle: "Period Care & Essentials",
+    productsSub: "Curated body-safe period wellness products paired with verified video tutorials.",
+    videoTutorialsTitle: "Step-by-Step Video Guides",
+    watchTutorial: "Watch Video Guide",
+    buyOrLearn: "Learn More",
+
+    // Yoga & Diet
+    yogaTitle: "Cycle-Synced Yoga & Daily Nourishment",
+    yogaSub: "Gentle restorative movement and nutrient-dense recipes matched to your current cycle phase.",
+    watchYogaPractice: "Play Guided Session",
+    benefits: "Benefits for your body",
+
+    // Doctor & Hospitals
+    doctorsTitle: "Trusted Doctors & Women's Clinics",
+    doctorsSub: "Real verified gynecologists, obstetricians, and renowned women's health facilities.",
+    verifiedSpecialist: "Verified Gynecologist",
+    bookConsultation: "Consultation Info",
+    callHospital: "Call Hospital Helpline",
+
+    // Spotify Vibes
+    vibesTitle: "Vibes & Soothing Playlists",
+    vibesSub: "Immerse yourself in gentle lo-fi, menstrual calm, and soothing sleep soundscapes.",
+    listenPlaylist: "Play on Spotify",
+
+    // Insights & Calendar
     calendarTitle: "Cycle Horizon & Predictions",
     calendarSub: "View projected fertile windows, luteal weeks, and future cycles.",
     predictedPeriod: "Predicted Period",
@@ -316,6 +465,7 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     cycleRegularity: "Predictability",
     regular: "Healthy & Consistent",
 
+    // Auth & Profile
     accountTitle: "Personal Sanctuary",
     accountSub: "Manage your profile, sync your cycle history, and privacy preferences.",
     continueWithGoogle: "Sign in with Google",
@@ -324,7 +474,11 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     privacyCommitment: "Our Privacy Promise",
     privacyBody: "Your cycle and symptom logs are deeply personal. Sakhi treats your data with utmost confidentiality, never sells health insights, and provides complete control to export or reset your records at any time.",
 
+    // Accessibility & UI common
     loading: "Loading your sanctuary...",
+    welcomeHaven: "Welcome to Sakhi Cycle",
+    bloomingSanctuary: "Blooming your serene wellness garden...",
+    enterSanctuary: "Enter Haven 🌸",
     errorGeneric: "An unexpected hiccup occurred. Please try again.",
     retry: "Try Again",
     close: "Close",
@@ -332,8 +486,8 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     confirm: "Confirm",
     selectLanguage: "Select Language",
     changeLanguage: "Change Language",
-    gentleAnimationToggle: "Floral Petals Animation",
-    animationsEnabled: "Floating Petals On",
+    gentleAnimationToggle: "Floral Petals & Cherry Blossoms",
+    animationsEnabled: "Floating Blossoms On",
     animationsMuted: "Calm View (Motion Muted)",
     allRightsReserved: "All rights reserved. Dedicated to womanhood and hormonal balance.",
     wellnessCompanionFooter: "Sakhi Cycle • Handcrafted with love for your wellbeing.",
@@ -342,12 +496,24 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
 
   hi: {
     brandName: "सखी साइकिल",
-    tagline: "आपकी अपनी मासिक धर्म और हार्मोनल स्वास्थ्य साथी",
+    tagline: "Understand • Track • Thrive",
     home: "आज का चक्र",
     cycleTracker: "साइकिल ट्रैकर",
     phaseGuide: "फेज़ गाइड",
     symptoms: "दैनिक डायरी",
     sakhiAi: "सखी AI",
+    talkToSakhi: "सखी से बात करें 🌸",
+    forum: "सखी चौपाल (Anonymous)",
+    buddy: "सखी बडी (WhatsApp)",
+    products: "पीरियड प्रोडक्ट्स 🩷",
+    findGynac: "गायनैक खोजें 🩺",
+    sakhiMusic: "सखी म्यूज़िक 🎵",
+    productGuide: "प्रोडक्ट गाइड",
+    compareProducts: "तुलना और खरीदें",
+    moreCare: "अन्य सुविधाएं ▾",
+    yoga: "योग और आहार",
+    doctors: "डॉक्टर व अस्पताल",
+    vibes: "संगीत व सुकून (Spotify)",
     insights: "कैलेंडर और रुझान",
     settings: "सेटिंग्स",
     signIn: "साइन इन करें",
@@ -438,6 +604,20 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     suggestedFoods: "इस चरण के लिए अनुकूल पौष्टिक भोजन",
     suggestedActivities: "इस चरण के लिए उत्तम शारीरिक गतिविधियाँ",
 
+    // Talk to Sakhi (Hindi)
+    talkToSakhiTitle: "सखी से दिल की बात 🌸",
+    talkToSakhiSub: "आपकी अपनी प्यारी दीदी और बेस्टी। दिल खोलकर बोलें, शिकायत करें या सवाल पूछें!",
+    tapAndTalk: "टैप करें और बोलें 🎙️",
+    listeningWave: "सखी सुन रही है... 🎧",
+    sakhiThinking: "सखी सोच रही है... ✨",
+    sakhiSpeaking: "सखी बोल रही है... 💕",
+    askByText: "लिखकर पूछें 💬",
+    justTalk: "बस बातें करें 🎙️",
+    talkToSakhiPlaceholder: "अपनी सखी दीदी से कुछ भी कहें... (जैसे: आज मन बहुत उदास है 🥺)",
+    bestieBadge: "आपकी अपनी प्यारी दीदी 💗",
+    ventOrAsk: "दिनभर की बात, मूड या पीरियड्स के बारे में बेझिझक बोलें।",
+
+    // Sakhi AI Chat
     sakhiChatTitle: "सखी AI साथी",
     sakhiChatSub: "मासिक धर्म, हार्मोनल संतुलन और घरेलू नुस्खों के लिए संवेदनशील बातचीत।",
     sakhiAiBadge: "AI स्वास्थ्य सहायिका • डॉक्टर नहीं",
@@ -463,6 +643,54 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     clearChat: "बातचीत मिटाएं",
     chatLanguagePrompt: "सखी आपकी चुनी हुई भाषा में आत्मीयता से उत्तर देती है।",
 
+    // Forum
+    forumTitle: "सखी चौपाल (गुमनाम मंच)",
+    forumSub: "बिना किसी संकोच के अपने सवाल पूछें, अनुभव साझा करें और बहनों से प्यार पाएं।",
+    createPost: "चौपाल में अपनी बात रखें",
+    anonymousBadge: "100% सुरक्षित और पूर्णतः गुप्त",
+    postTopicLabel: "विषय चुनें",
+    postContentPlaceholder: "अपने अनुभव, सवाल या दिल की बात यहाँ बेझिझक लिखें...",
+    postSubmit: "चौपाल पर साझा करें",
+    filterAll: "सभी विषय",
+    replies: "जवाब",
+    likeAction: "स्नेह भेजें 💗",
+
+    // Buddy System
+    buddyTitle: "सखी बडी व WhatsApp अलर्ट",
+    buddySub: "अपनी बहन, सहेली, माँ या साथी को WhatsApp पर एक क्लिक में अपडेट रखें।",
+    whatsAppShareTitle: "WhatsApp पर प्यार भरा संदेश भेजें",
+    notifyBuddy: "WhatsApp पर शेयर करें",
+    periodAlertMsg: "🌸 नमस्ते सखी! मेरा पीरियड आज शुरू हुआ है। बहुत सारा प्यार और थोड़ी सी गर्माहट चाहिए! 🩸🍫",
+    crampSosMsg: "🥺 सखी, आज पेट में थोड़ा दर्द है। गर्म पानी की थैली लेकर आराम कर रही हूँ, तुम्हारी याद आई! 💕",
+    cravingChaiMsg: "☕ आज गर्म अदरक वाली चाय और डार्क चॉकलेट की तलब हो रही है! तुम कैसी हो?",
+    highEnergyMsg: "✨ आज शरीर में बहुत ताज़गी और ऊर्जा है! चलो थोड़ी देर सैर करते हैं या गपशप करते हैं! 🌷",
+
+    // Products & Tutorials
+    productsTitle: "पीरियड वेलनेस उत्पाद",
+    productsSub: "विश्वसनीय, सुरक्षित उत्पाद और उनके उपयोग के प्रमाणित वीडियो ट्यूटोरियल।",
+    videoTutorialsTitle: "वीडियो गाइड (YouTube)",
+    watchTutorial: "वीडियो गाइड देखें",
+    buyOrLearn: "अधिक जानकारी",
+
+    // Yoga & Diet
+    yogaTitle: "मासिक चक्र योग व दैनिक पोषण",
+    yogaSub: "दर्द निवारक योग सत्र, मुद्राएं और हार्मोन संतुलन के लिए पौष्टिक भोजन।",
+    watchYogaPractice: "योग वीडियो चलाएं",
+    benefits: "शरीर को लाभ",
+
+    // Doctor & Hospitals
+    doctorsTitle: "विशेषज्ञ स्त्री रोग डॉक्टर व अस्पताल",
+    doctorsSub: "सत्यापित अनुभवी महिला रोग विशेषज्ञ और प्रमुख अस्पताल।",
+    verifiedSpecialist: "प्रमाणित स्त्री रोग विशेषज्ञ",
+    bookConsultation: "परामर्श जानकारी",
+    callHospital: "हेल्पलाइन पर कॉल करें",
+
+    // Spotify Vibes
+    vibesTitle: "संगीत व सुकून (Spotify)",
+    vibesSub: "शांत संगीत, लो-फाइ बीट्स और आरामदायक नींद के लिए ध्वनि तरंगें।",
+    listenPlaylist: "Spotify पर सुनें",
+
+    // Insights & Calendar
     calendarTitle: "साइकिल कैलेंडर और भविष्यवाणियां",
     calendarSub: "आगामी पीरियड्स, प्रजनन काल और मासिक रुझान देखें।",
     predictedPeriod: "अनुमानित पीरियड",
@@ -474,6 +702,7 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     cycleRegularity: "नियमितता",
     regular: "स्वस्थ और नियमित",
 
+    // Auth & Profile
     accountTitle: "व्यक्तिगत प्रोफ़ाइल",
     accountSub: "अपनी प्रोफ़ाइल, चक्र डेटा और गोपनीयता प्राथमिकताओं को प्रबंधित करें।",
     continueWithGoogle: "Google से साइन इन करें",
@@ -482,7 +711,11 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     privacyCommitment: "हमारा गोपनीयता वचन",
     privacyBody: "आपका स्वास्थ्य डेटा अत्यंत व्यक्तिगत है। सखी आपके डेटा की पूर्ण गोपनीयता बनाए रखती है, इसे कभी किसी को नहीं बेचती और आपको इसे कभी भी मिटाने या डाउनलोड करने का अधिकार देती है।",
 
+    // Accessibility & UI common
     loading: "तैयार हो रहा है...",
+    welcomeHaven: "सखी साइकिल में आपका स्वागत है",
+    bloomingSanctuary: "आपका सुखद वेलनेस उपवन खिल रहा है...",
+    enterSanctuary: "प्रवेश करें 🌸",
     errorGeneric: "एक छोटी सी समस्या आई। कृपया पुनः प्रयास करें।",
     retry: "पुनः प्रयास करें",
     close: "बंद करें",
@@ -490,7 +723,7 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     confirm: "पुष्टि करें",
     selectLanguage: "भाषा चुनें",
     changeLanguage: "भाषा बदलें",
-    gentleAnimationToggle: "गुलाब की पंखुड़ियों का एनीमेशन",
+    gentleAnimationToggle: "चेरी ब्लॉसम व पंखुड़ियों का एनीमेशन",
     animationsEnabled: "पंखुड़ियां चालू",
     animationsMuted: "शांत दृश्य (एनीमेशन बंद)",
     allRightsReserved: "सर्वाधिकार सुरक्षित। स्त्रीत्व और संपूर्ण स्वास्थ्य को समर्पित।",
@@ -500,12 +733,24 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
 
   hinglish: {
     brandName: "Sakhi Cycle",
-    tagline: "Aapki Apni Menstrual & Hormonal Wellness Companion",
+    tagline: "Understand • Track • Thrive",
     home: "Aaj Ka Circle",
     cycleTracker: "Cycle Tracker",
     phaseGuide: "Phase Syncing",
     symptoms: "Daily Log",
     sakhiAi: "Sakhi AI",
+    talkToSakhi: "Talk to Sakhi 🌸",
+    forum: "Sisterhood Forum (Anonymous)",
+    buddy: "Sakhi Buddy (WhatsApp)",
+    products: "Period Products 🩷",
+    findGynac: "Find a Gynac 🩺",
+    sakhiMusic: "Sakhi Music 🎵",
+    productGuide: "Product Guide",
+    compareProducts: "Compare & Buy",
+    moreCare: "More Care ▾",
+    yoga: "Yoga & Diet",
+    doctors: "Doctors & Clinics",
+    vibes: "Vibes & Spotify",
     insights: "Calendar & Trends",
     settings: "Settings",
     signIn: "Sign In Karein",
@@ -596,6 +841,20 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     suggestedFoods: "Is Phase Ke Liye Best Foods",
     suggestedActivities: "Is Phase Ke Liye Recommended Exercise",
 
+    // Talk to Sakhi (Hinglish)
+    talkToSakhiTitle: "Talk to Sakhi 🌸",
+    talkToSakhiSub: "Aapki sweetest supportive Indian bestie & Didi. Vent karein, poochhein ya bas gup-shup karein!",
+    tapAndTalk: "Tap & Talk 🎙️",
+    listeningWave: "Sakhi sun rahi hai... 🎧",
+    sakhiThinking: "Sakhi soch rahi hai... ✨",
+    sakhiSpeaking: "Sakhi bol rahi hai... 💕",
+    askByText: "Text Karke Poochhein 💬",
+    justTalk: "Just Talk 🎙️",
+    talkToSakhiPlaceholder: "Apni Sakhi bestie se dil ki baat bolein... (e.g. Aaj mood bahut kharab hai 🥺)",
+    bestieBadge: "Aapki Caring Voice Didi 💗",
+    ventOrAsk: "Vent karein, share your day, ask anything about your cycle or feelings.",
+
+    // Sakhi AI Chat
     sakhiChatTitle: "Sakhi AI Companion",
     sakhiChatSub: "Caring, confidential conversation periods, hormones aur diet ke liye.",
     sakhiAiBadge: "AI Wellness Assistant • Not a Doctor",
@@ -621,6 +880,54 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     clearChat: "Chat Clear Karein",
     chatLanguagePrompt: "Sakhi aapki selected language mein pyaar se reply karti hai.",
 
+    // Forum
+    forumTitle: "Sisterhood Anonymous Forum",
+    forumSub: "100% stigma-free and confidential space jahan sabhi ladkiyan bina hesitate kiye share karti hain.",
+    createPost: "Circle Mein Post Karein",
+    anonymousBadge: "100% Anonymous & Private",
+    postTopicLabel: "Topic Choose Karein",
+    postContentPlaceholder: "Apne doubts, experiences ya feelings freely likhein...",
+    postSubmit: "Post to Forum",
+    filterAll: "All Topics",
+    replies: "Replies",
+    likeAction: "Send Love 💗",
+
+    // Buddy System
+    buddyTitle: "Sakhi Buddy & WhatsApp Sync",
+    buddySub: "Apni sister, mom, bestie ya partner ko WhatsApp pe directly in-the-loop rakhein.",
+    whatsAppShareTitle: "Send Warm WhatsApp Check-in",
+    notifyBuddy: "WhatsApp Par Share Karein",
+    periodAlertMsg: "🌸 Hey Sakhi! Mera period aaj start ho gaya hai. Thode warm hugs aur hot chocolate bhej do! 🩸🍫",
+    crampSosMsg: "🥺 Hey dear, thode cramps ho rahe hain. Heating bag ke sath rest kar rahi hoon, bas update dena tha! 💕",
+    cravingChaiMsg: "☕ Craving some hot adrak wali chai and dark chocolate today! Tum kaisi ho?",
+    highEnergyMsg: "✨ Aaj follicular energy high hai! Chalo sham ko walk ya coffee pe milte hain! 🌷",
+
+    // Products & Tutorials
+    productsTitle: "Period Care Essentials",
+    productsSub: "Gentle organic pads, menstrual cups aur certified video tutorials.",
+    videoTutorialsTitle: "Video Guides (YouTube)",
+    watchTutorial: "Watch Video Guide",
+    buyOrLearn: "Learn More",
+
+    // Yoga & Diet
+    yogaTitle: "Cycle-Synced Yoga & Nourishment",
+    yogaSub: "Cramp relief yoga sessions aur hormone-friendly healthy diet recipes.",
+    watchYogaPractice: "Play Guided Session",
+    benefits: "Benefits for your body",
+
+    // Doctor & Hospitals
+    doctorsTitle: "Verified Doctors & Clinics",
+    doctorsSub: "Verified gynecologists, top women's hospitals aur emergency contact numbers.",
+    verifiedSpecialist: "Verified Gynecologist",
+    bookConsultation: "Consultation Info",
+    callHospital: "Call Hospital Helpline",
+
+    // Spotify Vibes
+    vibesTitle: "Vibes & Soothing Playlists",
+    vibesSub: "Period cramps calming lo-fi, peaceful healing aur cozy deep sleep vibes.",
+    listenPlaylist: "Play on Spotify",
+
+    // Insights & Calendar
     calendarTitle: "Cycle Horizon & Predictions",
     calendarSub: "Aane wale periods, ovulation window aur cycle patterns dekhein.",
     predictedPeriod: "Predicted Period",
@@ -632,6 +939,7 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     cycleRegularity: "Predictability",
     regular: "Regular & Healthy",
 
+    // Auth & Profile
     accountTitle: "Personal Sanctuary",
     accountSub: "Profile, cycle history sync aur privacy preferences manage karein.",
     continueWithGoogle: "Sign in with Google",
@@ -640,7 +948,11 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     privacyCommitment: "Hamara Privacy Promise",
     privacyBody: "Aapka health data 100% private hai. Sakhi aapka data kisi ko sell nahi karti aur aapko poora control deti hai kabhi bhi data export ya clear karne ka.",
 
+    // Accessibility & UI common
     loading: "Loading your sanctuary...",
+    welcomeHaven: "Welcome to Sakhi Cycle",
+    bloomingSanctuary: "Blooming your serene wellness garden...",
+    enterSanctuary: "Enter Haven 🌸",
     errorGeneric: "Kuch technical error hua. Please dobara try karein.",
     retry: "Dobara Try Karein",
     close: "Band Karein",
@@ -648,7 +960,7 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     confirm: "Confirm",
     selectLanguage: "Bhasha Chunein",
     changeLanguage: "Change Language",
-    gentleAnimationToggle: "Floral Petals Animation",
+    gentleAnimationToggle: "Cherry Blossoms & Petals Animation",
     animationsEnabled: "Petals Animation On",
     animationsMuted: "Calm View (Motion Off)",
     allRightsReserved: "All rights reserved. Dedicated to womanhood and hormonal harmony.",

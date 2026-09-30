@@ -3,10 +3,22 @@ import { LanguageProvider, useTranslation } from './i18n/context';
 import { BrandLogo } from './components/BrandLogo';
 import { LanguageSelector } from './components/LanguageSelector';
 import { FloralMotionBackdrop } from './components/FloralMotionBackdrop';
+import { WelcomeSplashScreen } from './components/WelcomeSplashScreen';
 import { CycleWheel } from './components/CycleWheel';
 import { SymptomLogger } from './components/SymptomLogger';
 import { PhaseGuide } from './components/PhaseGuide';
+import { TalkToSakhi } from './components/TalkToSakhi';
 import { SakhiChat } from './components/SakhiChat';
+import { AnonymousForum } from './components/AnonymousForum';
+import { BuddySystem } from './components/BuddySystem';
+import { ProductsTutorials } from './components/ProductsTutorials';
+import { PeriodProductGuide } from './components/PeriodProductGuide';
+import { CompareProducts } from './components/CompareProducts';
+import { YogaDiet } from './components/YogaDiet';
+import { DoctorDirectory } from './components/DoctorDirectory';
+import { FindGynac } from './components/FindGynac';
+import { SpotifyVibes } from './components/SpotifyVibes';
+import { SakhiMusic } from './components/SakhiMusic';
 import { CycleCalendar } from './components/CycleCalendar';
 import { SettingsModal } from './components/SettingsModal';
 import { AccountView } from './components/AccountView';
@@ -22,22 +34,69 @@ import {
   Menu,
   X,
   Droplets,
-  BookOpen
+  BookOpen,
+  Mic,
+  Users,
+  Share2,
+  Package,
+  Stethoscope,
+  Music,
+  ChevronRight,
+  ChevronDown,
+  ShoppingBag,
+  Scale,
 } from 'lucide-react';
 
 const STORAGE_CYCLE_SETTINGS = 'sakhi_cycle_settings_v1';
 const STORAGE_DAILY_LOGS = 'sakhi_daily_logs_v1';
 const STORAGE_USER_PROFILE = 'sakhi_user_profile_v1';
 const STORAGE_ANIMATIONS = 'sakhi_animations_enabled_v1';
+const STORAGE_SPLASH_SEEN = 'sakhi_splash_seen_session';
 
 function AppContent() {
   const { t, language } = useTranslation();
 
   // Navigation state
-  type NavTab = 'home' | 'phaseGuide' | 'symptoms' | 'sakhiAi' | 'calendar' | 'account';
+  type NavTab =
+    | 'home'
+    | 'talkToSakhi'
+    | 'phaseGuide'
+    | 'symptoms'
+    | 'sakhiAi'
+    | 'forum'
+    | 'buddy'
+    | 'products'
+    | 'yoga'
+    | 'doctors'
+    | 'vibes'
+    | 'calendar'
+    | 'account';
+
   const [activeTab, setActiveTab] = useState<NavTab>('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
+  const [productSubTab, setProductSubTab] = useState<'guide' | 'compare' | 'tutorials'>('guide');
+  const [doctorSubTab, setDoctorSubTab] = useState<'gynac' | 'hospitals'>('gynac');
+  const [musicSubTab, setMusicSubTab] = useState<'sakhiMusic' | 'spotifyVibes'>('sakhiMusic');
+
+  // Splash screen state (shown on initial load)
+  const [showSplash, setShowSplash] = useState(() => {
+    try {
+      return !sessionStorage.getItem(STORAGE_SPLASH_SEEN);
+    } catch {
+      return true;
+    }
+  });
+
+  const handleDismissSplash = () => {
+    setShowSplash(false);
+    try {
+      sessionStorage.setItem(STORAGE_SPLASH_SEEN, 'true');
+    } catch {
+      // ignore
+    }
+  };
 
   // Animations preference
   const [animationsEnabled, setAnimationsEnabled] = useState<boolean>(() => {
@@ -61,7 +120,7 @@ function AppContent() {
     });
   };
 
-  // Cycle Settings State (default: last period started 7 days ago, cycle 28, period 5)
+  // Cycle Settings State
   const [cycleSettings, setCycleSettings] = useState<CycleSettings>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_CYCLE_SETTINGS);
@@ -78,7 +137,7 @@ function AppContent() {
     };
   });
 
-  // Daily Logs State (Keyed by YYYY-MM-DD)
+  // Daily Logs State
   const [dailyLogs, setDailyLogs] = useState<Record<string, DailySymptomLog>>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_DAILY_LOGS);
@@ -110,7 +169,6 @@ function AppContent() {
     };
   });
 
-  // Save changes to localStorage
   const handleSaveSettings = (newSettings: CycleSettings) => {
     setCycleSettings(newSettings);
     try {
@@ -140,7 +198,6 @@ function AppContent() {
     };
     handleSaveSettings(updated);
 
-    // Also record a flow log for today
     const currentTodayLog = dailyLogs[todayStr] || {
       date: todayStr,
       flow: 'medium',
@@ -153,104 +210,218 @@ function AppContent() {
     handleSaveDailyLog({ ...currentTodayLog, flow: 'medium' });
   };
 
-  // Calculate current cycle status
   const cycleStatus = calculateCycleStatus(cycleSettings);
-
   const todayStr = new Date().toISOString().split('T')[0];
   const todayLog = dailyLogs[todayStr];
 
   return (
-    <div className="min-h-screen flex flex-col relative selection:bg-[#F2D7D9] selection:text-[#5F1D38]">
-      {/* Background with floral motion */}
+    <div className="min-h-screen flex flex-col relative selection:bg-[#FCE7F3] selection:text-[#831843]">
+      {/* Blooming Cherry Blossom Loading Splash Screen */}
+      {showSplash && <WelcomeSplashScreen onEnter={handleDismissSplash} />}
+
+      {/* Background with floral motion & water droplets */}
       <FloralMotionBackdrop enabled={animationsEnabled} />
 
-      {/* Main App Header */}
-      <header className="sticky top-0 z-40 bg-[#FFFDFB]/90 backdrop-blur-md border-b border-[#F4DFE2] transition-colors">
+      {/* Main Glass Header */}
+      <header className="sticky top-0 z-40 bg-white/75 backdrop-blur-xl border-b border-[#F4DFE2]/80 transition-colors shadow-2xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between gap-3">
           {/* Official Brand Logo */}
           <BrandLogo
             size="md"
             showSubtitle={true}
             onClick={() => setActiveTab('home')}
-            className="hover:opacity-95"
+            className="hover:scale-[1.02] transition-transform"
           />
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1 bg-[#FFF6F3]/80 p-1.5 rounded-full border border-[#F2D6DC]" aria-label="Main Navigation">
+          <nav
+            className="hidden xl:flex items-center gap-1.5 bg-[#FFF5F8]/85 p-1.5 rounded-full border border-[#F2D6DC] shadow-xs relative"
+            aria-label="Main Navigation"
+          >
+            {/* 1. Home */}
             <button
               type="button"
-              onClick={() => setActiveTab('home')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+              onClick={() => { setActiveTab('home'); setIsMoreMenuOpen(false); }}
+              className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
                 activeTab === 'home'
                   ? 'bg-white text-[#7A1E34] shadow-xs'
                   : 'text-[#6E3C48] hover:text-[#4A1E29]'
               }`}
             >
-              {t.home}
+              <span>🌸</span>
+              <span>{t.home}</span>
             </button>
+
+            {/* 2. Standalone Voice AI Bestie */}
             <button
               type="button"
-              onClick={() => setActiveTab('phaseGuide')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                activeTab === 'phaseGuide'
+              onClick={() => { setActiveTab('talkToSakhi'); setIsMoreMenuOpen(false); }}
+              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold transition-all shadow-xs ${
+                activeTab === 'talkToSakhi'
+                  ? 'bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 text-white shadow-rose-200'
+                  : 'bg-white text-rose-700 hover:bg-rose-50 border border-rose-200'
+              }`}
+            >
+              <Mic className="w-3.5 h-3.5 animate-pulse" />
+              <span>{t.talkToSakhi}</span>
+            </button>
+
+            {/* 3. Find a Gynac */}
+            <button
+              type="button"
+              onClick={() => { setActiveTab('doctors'); setIsMoreMenuOpen(false); }}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                activeTab === 'doctors'
                   ? 'bg-white text-[#7A1E34] shadow-xs'
                   : 'text-[#6E3C48] hover:text-[#4A1E29]'
               }`}
             >
-              {t.phaseGuide}
+              <Stethoscope className="w-3.5 h-3.5 text-rose-600" />
+              <span>{t.findGynac}</span>
             </button>
+
+            {/* 4. Sakhi Music */}
             <button
               type="button"
-              onClick={() => setActiveTab('symptoms')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                activeTab === 'symptoms'
+              onClick={() => { setActiveTab('vibes'); setIsMoreMenuOpen(false); }}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                activeTab === 'vibes'
                   ? 'bg-white text-[#7A1E34] shadow-xs'
                   : 'text-[#6E3C48] hover:text-[#4A1E29]'
               }`}
             >
-              {t.symptoms}
+              <Music className="w-3.5 h-3.5 text-purple-600" />
+              <span>{t.sakhiMusic}</span>
             </button>
+
+            {/* 5. Period Products Guide & Compare */}
             <button
               type="button"
-              onClick={() => setActiveTab('sakhiAi')}
-              className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                activeTab === 'sakhiAi'
-                  ? 'bg-gradient-to-r from-[#D86B84] to-[#C04D68] text-white shadow-xs'
-                  : 'text-[#8B263E] hover:text-[#5C1A29]'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>{t.sakhiAi}</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('calendar')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                activeTab === 'calendar'
+              onClick={() => { setActiveTab('products'); setIsMoreMenuOpen(false); }}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                activeTab === 'products'
                   ? 'bg-white text-[#7A1E34] shadow-xs'
                   : 'text-[#6E3C48] hover:text-[#4A1E29]'
               }`}
             >
-              {t.insights}
+              <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-100" />
+              <span>{t.products}</span>
             </button>
+
+            {/* 6. Anonymous Forum */}
+            <button
+              type="button"
+              onClick={() => { setActiveTab('forum'); setIsMoreMenuOpen(false); }}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                activeTab === 'forum'
+                  ? 'bg-white text-[#7A1E34] shadow-xs'
+                  : 'text-[#6E3C48] hover:text-[#4A1E29]'
+              }`}
+            >
+              <Users className="w-3.5 h-3.5 text-pink-600" />
+              <span>{t.forum}</span>
+            </button>
+
+            {/* 7. More Care Dropdown */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                  ['phaseGuide', 'symptoms', 'sakhiAi', 'buddy', 'yoga', 'calendar'].includes(activeTab)
+                    ? 'bg-white text-[#7A1E34] shadow-xs'
+                    : 'text-[#6E3C48] hover:text-[#4A1E29]'
+                }`}
+              >
+                <span>{t.moreCare}</span>
+                <ChevronDown className="w-3 h-3" />
+              </button>
+
+              {isMoreMenuOpen && (
+                <div className="absolute right-0 top-full mt-2 w-56 rounded-2xl bg-white/95 backdrop-blur-xl border border-pink-200 shadow-lg p-2 z-50 animate-in fade-in space-y-1">
+                  <button
+                    type="button"
+                    onClick={() => { setActiveTab('phaseGuide'); setIsMoreMenuOpen(false); }}
+                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-pink-50 transition-colors ${
+                      activeTab === 'phaseGuide' ? 'bg-[#FFF0F3] text-[#7A1E34]' : 'text-[#5C2E38]'
+                    }`}
+                  >
+                    <BookOpen className="w-3.5 h-3.5 text-rose-500" />
+                    <span>{t.phaseGuide}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => { setActiveTab('symptoms'); setIsMoreMenuOpen(false); }}
+                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-pink-50 transition-colors ${
+                      activeTab === 'symptoms' ? 'bg-[#FFF0F3] text-[#7A1E34]' : 'text-[#5C2E38]'
+                    }`}
+                  >
+                    <Droplets className="w-3.5 h-3.5 text-pink-500" />
+                    <span>{t.symptoms}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => { setActiveTab('sakhiAi'); setIsMoreMenuOpen(false); }}
+                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-pink-50 transition-colors ${
+                      activeTab === 'sakhiAi' ? 'bg-[#FFF0F3] text-[#7A1E34]' : 'text-[#5C2E38]'
+                    }`}
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                    <span>{t.sakhiAi} Chat</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => { setActiveTab('buddy'); setIsMoreMenuOpen(false); }}
+                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-pink-50 transition-colors ${
+                      activeTab === 'buddy' ? 'bg-[#FFF0F3] text-[#7A1E34]' : 'text-[#5C2E38]'
+                    }`}
+                  >
+                    <Share2 className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>{t.buddy}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => { setActiveTab('yoga'); setIsMoreMenuOpen(false); }}
+                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-pink-50 transition-colors ${
+                      activeTab === 'yoga' ? 'bg-[#FFF0F3] text-[#7A1E34]' : 'text-[#5C2E38]'
+                    }`}
+                  >
+                    <span>🧘‍♀️</span>
+                    <span>{t.yoga}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => { setActiveTab('calendar'); setIsMoreMenuOpen(false); }}
+                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-pink-50 transition-colors ${
+                      activeTab === 'calendar' ? 'bg-[#FFF0F3] text-[#7A1E34]' : 'text-[#5C2E38]'
+                    }`}
+                  >
+                    <Calendar className="w-3.5 h-3.5 text-indigo-500" />
+                    <span>{t.insights}</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </nav>
 
-          {/* Right Header Tools: Language Selector, Settings, Profile */}
+          {/* Right Header Tools */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Multilingual Selector */}
             <LanguageSelector />
 
-            {/* Quick Settings Button */}
             <button
               type="button"
               onClick={() => setIsSettingsOpen(true)}
               aria-label={t.settings}
-              className="p-2 rounded-full border border-[#ECCACF] bg-[#FFFBF8] hover:bg-[#FFF4F0] text-[#7A4B55] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D86B84]"
+              className="p-2 rounded-full border border-[#ECCACF] bg-white/80 hover:bg-[#FFF4F0] text-[#7A4B55] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D86B84]"
             >
               <SlidersHorizontal className="w-4 h-4" />
             </button>
 
-            {/* Profile Avatar button */}
             <button
               type="button"
               onClick={() => setActiveTab('account')}
@@ -264,7 +435,7 @@ function AppContent() {
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl text-[#7A4B55] hover:bg-[#FFF4F0]"
+              className="xl:hidden p-2 rounded-xl text-[#7A4B55] hover:bg-[#FFF4F0]"
               aria-label="Toggle Navigation Menu"
             >
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -274,87 +445,171 @@ function AppContent() {
 
         {/* Mobile Navigation Dropdown */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-[#F4DFE2] bg-[#FFFDFB] px-4 py-3 space-y-1 animate-in fade-in">
+          <div className="xl:hidden border-t border-[#F4DFE2] bg-white/95 backdrop-blur-xl px-4 py-5 space-y-4 animate-in fade-in max-h-[80vh] overflow-y-auto">
+            {/* Big Prominent Talk to Sakhi Card */}
             <button
               type="button"
               onClick={() => {
-                setActiveTab('home');
+                setActiveTab('talkToSakhi');
                 setIsMobileMenuOpen(false);
               }}
-              className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold ${
-                activeTab === 'home' ? 'bg-[#FCEEE9] text-[#7A1E34]' : 'text-[#5C2E38]'
-              }`}
+              className="w-full text-center py-3 rounded-2xl text-xs font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 text-white shadow-md flex items-center justify-center gap-2"
             >
-              {t.home}
+              <Mic className="w-4 h-4 animate-pulse" />
+              <span>Talk to Sakhi 🌸 (Voice Bestie)</span>
             </button>
-            <button
-              type="button"
-              onClick={() => {
-                setActiveTab('phaseGuide');
-                setIsMobileMenuOpen(false);
-              }}
-              className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold ${
-                activeTab === 'phaseGuide' ? 'bg-[#FCEEE9] text-[#7A1E34]' : 'text-[#5C2E38]'
-              }`}
-            >
-              {t.phaseGuide}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setActiveTab('symptoms');
-                setIsMobileMenuOpen(false);
-              }}
-              className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold ${
-                activeTab === 'symptoms' ? 'bg-[#FCEEE9] text-[#7A1E34]' : 'text-[#5C2E38]'
-              }`}
-            >
-              {t.symptoms}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setActiveTab('sakhiAi');
-                setIsMobileMenuOpen(false);
-              }}
-              className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-between ${
-                activeTab === 'sakhiAi'
-                  ? 'bg-gradient-to-r from-[#D86B84] to-[#C04D68] text-white'
-                  : 'text-[#8B263E]'
-              }`}
-            >
-              <span>{t.sakhiAi}</span>
-              <Sparkles className="w-4 h-4" />
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setActiveTab('calendar');
-                setIsMobileMenuOpen(false);
-              }}
-              className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold ${
-                activeTab === 'calendar' ? 'bg-[#FCEEE9] text-[#7A1E34]' : 'text-[#5C2E38]'
-              }`}
-            >
-              {t.insights}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setActiveTab('account');
-                setIsMobileMenuOpen(false);
-              }}
-              className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold ${
-                activeTab === 'account' ? 'bg-[#FCEEE9] text-[#7A1E34]' : 'text-[#5C2E38]'
-              }`}
-            >
-              {t.accountTitle}
-            </button>
+
+            {/* Section 1: Quick Care */}
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-rose-700 px-2">
+                Essential Care
+              </span>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => { setActiveTab('home'); setIsMobileMenuOpen(false); }}
+                  className={`text-left px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+                    activeTab === 'home' ? 'bg-[#FCEEE9] text-[#7A1E34]' : 'bg-pink-50/50 text-[#5C2E38]'
+                  }`}
+                >
+                  <span>🌸</span>
+                  <span>{t.home}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setActiveTab('doctors'); setIsMobileMenuOpen(false); }}
+                  className={`text-left px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+                    activeTab === 'doctors' ? 'bg-[#FCEEE9] text-[#7A1E34]' : 'bg-pink-50/50 text-[#5C2E38]'
+                  }`}
+                >
+                  <Stethoscope className="w-3.5 h-3.5 text-rose-500" />
+                  <span>{t.findGynac}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setActiveTab('vibes'); setIsMobileMenuOpen(false); }}
+                  className={`text-left px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+                    activeTab === 'vibes' ? 'bg-[#FCEEE9] text-[#7A1E34]' : 'bg-pink-50/50 text-[#5C2E38]'
+                  }`}
+                >
+                  <Music className="w-3.5 h-3.5 text-purple-500" />
+                  <span>{t.sakhiMusic}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setActiveTab('products'); setIsMobileMenuOpen(false); }}
+                  className={`text-left px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+                    activeTab === 'products' ? 'bg-[#FCEEE9] text-[#7A1E34]' : 'bg-pink-50/50 text-[#5C2E38]'
+                  }`}
+                >
+                  <Heart className="w-3.5 h-3.5 text-rose-500" />
+                  <span>{t.products}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Section 2: Period & Body */}
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-rose-700 px-2">
+                Cycle & Lifestyle
+              </span>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => { setActiveTab('phaseGuide'); setIsMobileMenuOpen(false); }}
+                  className={`text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+                    activeTab === 'phaseGuide' ? 'bg-[#FCEEE9] text-[#7A1E34]' : 'text-[#5C2E38]'
+                  }`}
+                >
+                  <BookOpen className="w-3.5 h-3.5 text-rose-400" />
+                  <span>{t.phaseGuide}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setActiveTab('symptoms'); setIsMobileMenuOpen(false); }}
+                  className={`text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+                    activeTab === 'symptoms' ? 'bg-[#FCEEE9] text-[#7A1E34]' : 'text-[#5C2E38]'
+                  }`}
+                >
+                  <Droplets className="w-3.5 h-3.5 text-pink-400" />
+                  <span>{t.symptoms}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setActiveTab('yoga'); setIsMobileMenuOpen(false); }}
+                  className={`text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+                    activeTab === 'yoga' ? 'bg-[#FCEEE9] text-[#7A1E34]' : 'text-[#5C2E38]'
+                  }`}
+                >
+                  <span>🧘‍♀️</span>
+                  <span>{t.yoga}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setActiveTab('calendar'); setIsMobileMenuOpen(false); }}
+                  className={`text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+                    activeTab === 'calendar' ? 'bg-[#FCEEE9] text-[#7A1E34]' : 'text-[#5C2E38]'
+                  }`}
+                >
+                  <Calendar className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>{t.insights}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Section 3: Sisterhood & Community */}
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-rose-700 px-2">
+                Sisterhood & Support
+              </span>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => { setActiveTab('forum'); setIsMobileMenuOpen(false); }}
+                  className={`text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+                    activeTab === 'forum' ? 'bg-[#FCEEE9] text-[#7A1E34]' : 'text-[#5C2E38]'
+                  }`}
+                >
+                  <Users className="w-3.5 h-3.5 text-pink-500" />
+                  <span>{t.forum}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setActiveTab('buddy'); setIsMobileMenuOpen(false); }}
+                  className={`text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+                    activeTab === 'buddy' ? 'bg-[#FCEEE9] text-[#7A1E34]' : 'text-[#5C2E38]'
+                  }`}
+                >
+                  <Share2 className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>{t.buddy}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setActiveTab('sakhiAi'); setIsMobileMenuOpen(false); }}
+                  className={`text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+                    activeTab === 'sakhiAi' ? 'bg-[#FCEEE9] text-[#7A1E34]' : 'text-[#8B263E]'
+                  }`}
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                  <span>{t.sakhiAi}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setActiveTab('account'); setIsMobileMenuOpen(false); }}
+                  className={`text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 ${
+                    activeTab === 'account' ? 'bg-[#FCEEE9] text-[#7A1E34]' : 'text-[#5C2E38]'
+                  }`}
+                >
+                  <User className="w-3.5 h-3.5 text-rose-500" />
+                  <span>{t.accountTitle}</span>
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </header>
 
-      {/* Main Content Area */}
+      {/* Main Sanctuary Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         {/* Tab 1: Home / Today's Circle */}
         {activeTab === 'home' && (
@@ -372,8 +627,44 @@ function AppContent() {
               </p>
             </div>
 
+            {/* Quick Callout to Talk to Sakhi (Voice Bestie) */}
+            <div
+              onClick={() => setActiveTab('talkToSakhi')}
+              role="button"
+              tabIndex={0}
+              className="max-w-3xl mx-auto bg-gradient-to-r from-[#FFF0F5] via-[#FFF9FA] to-[#F5EEFF] rounded-3xl p-5 sm:p-6 border border-pink-200/80 shadow-sm cursor-pointer hover:shadow-md hover:scale-[1.01] transition-all flex flex-col sm:flex-row items-center justify-between gap-4"
+            >
+              <div className="flex items-center gap-3.5">
+                <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-pink-300 ring-2 ring-pink-100 flex-shrink-0">
+                  <img
+                    src="/cute_sakhi_avatar.jpg"
+                    alt="Talk to Sakhi Bestie"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="text-left">
+                  <div className="flex items-center gap-2">
+                    <span className="font-serif text-lg font-bold text-[#4A1E29]">
+                      {t.talkToSakhiTitle}
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-pink-200 text-pink-900">
+                      New Voice AI
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#7A4B55] mt-0.5">
+                    Tap to vent, talk about cramps, or share your day with your sweetest Indian Didi! 💗
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold text-xs shadow-xs flex-shrink-0">
+                <Mic className="w-4 h-4 animate-pulse" />
+                <span>Tap & Talk Now</span>
+              </div>
+            </div>
+
             {/* Central Wheel & Status */}
-            <div className="bg-[#FFFDFB] rounded-3xl p-6 sm:p-10 border border-[#F4DFE2] shadow-sm max-w-3xl mx-auto">
+            <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 sm:p-10 border border-[#F4DFE2] shadow-sm max-w-3xl mx-auto">
               <CycleWheel
                 status={cycleStatus}
                 onLogPeriodToday={handleMarkPeriodToday}
@@ -381,10 +672,10 @@ function AppContent() {
               />
             </div>
 
-            {/* Quick Cards Grid: Phase Overview & Today's Care */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-              {/* Card 1: Phase Syncing Teaser */}
-              <div className="bg-[#FFFDFB] rounded-3xl p-6 border border-[#F4DFE2] shadow-2xs space-y-4 flex flex-col justify-between">
+            {/* Quick Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
+              {/* Card 1: Phase Syncing */}
+              <div className="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-[#F4DFE2] shadow-2xs space-y-4 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-[#A63A50]">
@@ -394,16 +685,10 @@ function AppContent() {
                       Day {cycleStatus.currentDay}
                     </span>
                   </div>
-                  <h3 className="font-serif text-2xl font-bold text-[#4A1E29] mt-1.5 capitalize">
-                    {cycleStatus.phase === 'menstrual'
-                      ? t.phaseMenstrual
-                      : cycleStatus.phase === 'follicular'
-                      ? t.phaseFollicular
-                      : cycleStatus.phase === 'ovulatory'
-                      ? t.phaseOvulatory
-                      : t.phaseLuteal}
+                  <h3 className="font-serif text-xl font-bold text-[#4A1E29] mt-1.5 capitalize">
+                    {cycleStatus.phase}
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#7A4B55] mt-2 leading-relaxed">
+                  <p className="text-xs text-[#7A4B55] mt-1.5 leading-relaxed">
                     {cycleStatus.phase === 'menstrual'
                       ? t.phaseMenstrualDesc
                       : cycleStatus.phase === 'follicular'
@@ -417,37 +702,130 @@ function AppContent() {
                 <button
                   type="button"
                   onClick={() => setActiveTab('phaseGuide')}
-                  className="inline-flex items-center gap-2 text-xs font-bold text-[#A63A50] hover:text-[#7A1E34] transition-colors mt-3"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#A63A50] hover:text-[#7A1E34] transition-colors"
                 >
                   <BookOpen className="w-4 h-4" />
-                  <span>Explore Phase Nutrition & Workouts →</span>
+                  <span>Phase Nutrition & Care →</span>
                 </button>
               </div>
 
-              {/* Card 2: Sakhi AI Consultation Teaser */}
-              <div className="bg-gradient-to-tr from-[#FFF5F2] via-[#FFF9F6] to-[#FDF4FF] rounded-3xl p-6 border border-[#F2D6DC] shadow-2xs space-y-4 flex flex-col justify-between">
+              {/* Card 2: Sisterhood Forum */}
+              <div className="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-[#F4DFE2] shadow-2xs space-y-4 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-[#A63A50]" />
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#A63A50]">
-                      {t.sakhiAi}
-                    </span>
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#A63A50] uppercase tracking-wider">
+                    <Users className="w-4 h-4" />
+                    <span>{t.forum}</span>
                   </div>
-                  <h3 className="font-serif text-2xl font-bold text-[#4A1E29] mt-1.5">
-                    How is your body feeling?
+                  <h3 className="font-serif text-xl font-bold text-[#4A1E29] mt-1.5">
+                    Safe Anonymous Haven
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#7A4B55] mt-2 leading-relaxed">
-                    {t.chatLanguagePrompt} Ask for instant cramp soothers, tea recipes, or hormone-friendly foods.
+                  <p className="text-xs text-[#7A4B55] mt-1.5 leading-relaxed">
+                    Ask questions without shame, share cramp remedies, and receive love from sisters across India.
                   </p>
                 </div>
 
                 <button
                   type="button"
-                  onClick={() => setActiveTab('sakhiAi')}
-                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold bg-gradient-to-r from-[#D86B84] to-[#C04D68] hover:from-[#C75A73] hover:to-[#AC3E57] text-white shadow-xs active:scale-95 transition-all"
+                  onClick={() => setActiveTab('forum')}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#A63A50] hover:text-[#7A1E34] transition-colors"
                 >
-                  <MessageCircleHeart className="w-4 h-4" />
-                  <span>Talk with Sakhi AI</span>
+                  <span>Visit Anonymous Circle →</span>
+                </button>
+              </div>
+
+              {/* Card 3: WhatsApp Buddy Alert */}
+              <div className="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-[#F4DFE2] shadow-2xs space-y-4 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 uppercase tracking-wider">
+                    <Share2 className="w-4 h-4" />
+                    <span>{t.buddy}</span>
+                  </div>
+                  <h3 className="font-serif text-xl font-bold text-[#4A1E29] mt-1.5">
+                    WhatsApp Check-in
+                  </h3>
+                  <p className="text-xs text-[#7A4B55] mt-1.5 leading-relaxed">
+                    Notify your sister or partner with 1-tap caring messages for cramps or cravings.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('buddy')}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-900 transition-colors"
+                >
+                  <span>Open WhatsApp Buddy →</span>
+                </button>
+              </div>
+
+              {/* Card 4: Find a Gynac */}
+              <div className="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-[#F4DFE2] shadow-2xs space-y-4 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-rose-700 uppercase tracking-wider">
+                    <Stethoscope className="w-4 h-4" />
+                    <span>{t.findGynac}</span>
+                  </div>
+                  <h3 className="font-serif text-xl font-bold text-[#4A1E29] mt-1.5">
+                    Nearby Gynecologists
+                  </h3>
+                  <p className="text-xs text-[#7A4B55] mt-1.5 leading-relaxed">
+                    Filter verified female doctors, consult online or visit top women's hospitals nearby.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('doctors')}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-700 hover:text-rose-900 transition-colors"
+                >
+                  <span>Find Care Providers →</span>
+                </button>
+              </div>
+
+              {/* Card 5: Sakhi Music */}
+              <div className="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-[#F4DFE2] shadow-2xs space-y-4 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-purple-700 uppercase tracking-wider">
+                    <Music className="w-4 h-4" />
+                    <span>{t.sakhiMusic}</span>
+                  </div>
+                  <h3 className="font-serif text-xl font-bold text-[#4A1E29] mt-1.5">
+                    Spotify Soundscapes
+                  </h3>
+                  <p className="text-xs text-[#7A4B55] mt-1.5 leading-relaxed">
+                    Cramp soothing, sleep delta waves, and focus lo-fi playlists curated for your cycle.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('vibes')}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-purple-700 hover:text-purple-900 transition-colors"
+                >
+                  <span>Listen on Spotify ↗</span>
+                </button>
+              </div>
+
+              {/* Card 6: Period Product Guide & Compare */}
+              <div className="bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-[#F4DFE2] shadow-2xs space-y-4 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-pink-700 uppercase tracking-wider">
+                    <Heart className="w-4 h-4" />
+                    <span>{t.products}</span>
+                  </div>
+                  <h3 className="font-serif text-xl font-bold text-[#4A1E29] mt-1.5">
+                    Compare & Product Guide
+                  </h3>
+                  <p className="text-xs text-[#7A4B55] mt-1.5 leading-relaxed">
+                    5-step illustrated tutorials for cups, pads & tampons, plus side-by-side eco comparison.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('products')}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-pink-700 hover:text-pink-900 transition-colors"
+                >
+                  <span>Explore Product Guide →</span>
                 </button>
               </div>
             </div>
@@ -459,35 +837,175 @@ function AppContent() {
           </div>
         )}
 
-        {/* Tab 2: Phase Syncing Guide */}
+        {/* Tab 2: Talk to Sakhi (Dedicated Voice AI Bestie) */}
+        {activeTab === 'talkToSakhi' && (
+          <div className="animate-in fade-in duration-300">
+            <TalkToSakhi cycleStatus={cycleStatus} />
+          </div>
+        )}
+
+        {/* Tab 3: Phase Syncing Guide */}
         {activeTab === 'phaseGuide' && (
           <div className="animate-in fade-in duration-300">
             <PhaseGuide currentPhase={cycleStatus.phase} />
           </div>
         )}
 
-        {/* Tab 3: Daily Symptom Logger */}
+        {/* Tab 4: Daily Symptom Logger */}
         {activeTab === 'symptoms' && (
           <div className="max-w-3xl mx-auto animate-in fade-in duration-300">
             <SymptomLogger initialLog={todayLog} onSaveLog={handleSaveDailyLog} />
           </div>
         )}
 
-        {/* Tab 4: Sakhi AI Companion */}
+        {/* Tab 5: Existing Sakhi AI Chat */}
         {activeTab === 'sakhiAi' && (
           <div className="max-w-3xl mx-auto animate-in fade-in duration-300">
             <SakhiChat cycleStatus={cycleStatus} />
           </div>
         )}
 
-        {/* Tab 5: Calendar & Trends */}
+        {/* Tab 6: Anonymous Forum */}
+        {activeTab === 'forum' && (
+          <div className="animate-in fade-in duration-300">
+            <AnonymousForum />
+          </div>
+        )}
+
+        {/* Tab 7: Buddy System */}
+        {activeTab === 'buddy' && (
+          <div className="animate-in fade-in duration-300">
+            <BuddySystem cycleStatus={cycleStatus} />
+          </div>
+        )}
+
+        {/* Tab 8: Period Care Products, Comparison & Guides */}
+        {activeTab === 'products' && (
+          <div className="space-y-6 animate-in fade-in duration-300">
+            {/* Sub-navigation tabs */}
+            <div className="flex items-center justify-center gap-1.5 max-w-lg mx-auto p-1.5 bg-white/80 backdrop-blur-md rounded-full border border-pink-200 shadow-2xs">
+              <button
+                type="button"
+                onClick={() => setProductSubTab('guide')}
+                className={`flex-1 py-2 px-3 rounded-full text-xs font-bold transition-all ${
+                  productSubTab === 'guide'
+                    ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-xs'
+                    : 'text-[#6E3C48] hover:bg-pink-50'
+                }`}
+              >
+                🩷 Product Guide
+              </button>
+              <button
+                type="button"
+                onClick={() => setProductSubTab('compare')}
+                className={`flex-1 py-2 px-3 rounded-full text-xs font-bold transition-all ${
+                  productSubTab === 'compare'
+                    ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-xs'
+                    : 'text-[#6E3C48] hover:bg-pink-50'
+                }`}
+              >
+                🛍️ Compare & Buy
+              </button>
+              <button
+                type="button"
+                onClick={() => setProductSubTab('tutorials')}
+                className={`flex-1 py-2 px-3 rounded-full text-xs font-bold transition-all ${
+                  productSubTab === 'tutorials'
+                    ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-xs'
+                    : 'text-[#6E3C48] hover:bg-pink-50'
+                }`}
+              >
+                🎬 Video Tutorials
+              </button>
+            </div>
+
+            {productSubTab === 'guide' && <PeriodProductGuide />}
+            {productSubTab === 'compare' && <CompareProducts />}
+            {productSubTab === 'tutorials' && <ProductsTutorials />}
+          </div>
+        )}
+
+        {/* Tab 9: Yoga & Daily Nourishment */}
+        {activeTab === 'yoga' && (
+          <div className="animate-in fade-in duration-300">
+            <YogaDiet />
+          </div>
+        )}
+
+        {/* Tab 10: Doctors & Hospitals */}
+        {activeTab === 'doctors' && (
+          <div className="space-y-6 animate-in fade-in duration-300">
+            {/* Sub-navigation tabs */}
+            <div className="flex items-center justify-center gap-1.5 max-w-md mx-auto p-1.5 bg-white/80 backdrop-blur-md rounded-full border border-pink-200 shadow-2xs">
+              <button
+                type="button"
+                onClick={() => setDoctorSubTab('gynac')}
+                className={`flex-1 py-2 px-4 rounded-full text-xs font-bold transition-all ${
+                  doctorSubTab === 'gynac'
+                    ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-xs'
+                    : 'text-[#6E3C48] hover:bg-pink-50'
+                }`}
+              >
+                🩺 Find a Gynac
+              </button>
+              <button
+                type="button"
+                onClick={() => setDoctorSubTab('hospitals')}
+                className={`flex-1 py-2 px-4 rounded-full text-xs font-bold transition-all ${
+                  doctorSubTab === 'hospitals'
+                    ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-xs'
+                    : 'text-[#6E3C48] hover:bg-pink-50'
+                }`}
+              >
+                🏥 Hospitals & Helplines
+              </button>
+            </div>
+
+            {doctorSubTab === 'gynac' ? <FindGynac /> : <DoctorDirectory />}
+          </div>
+        )}
+
+        {/* Tab 11: Vibes & Spotify */}
+        {activeTab === 'vibes' && (
+          <div className="space-y-6 animate-in fade-in duration-300">
+            {/* Sub-navigation tabs */}
+            <div className="flex items-center justify-center gap-1.5 max-w-md mx-auto p-1.5 bg-white/80 backdrop-blur-md rounded-full border border-pink-200 shadow-2xs">
+              <button
+                type="button"
+                onClick={() => setMusicSubTab('sakhiMusic')}
+                className={`flex-1 py-2 px-4 rounded-full text-xs font-bold transition-all ${
+                  musicSubTab === 'sakhiMusic'
+                    ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-xs'
+                    : 'text-[#6E3C48] hover:bg-pink-50'
+                }`}
+              >
+                🎵 Sakhi Music Sanctuary
+              </button>
+              <button
+                type="button"
+                onClick={() => setMusicSubTab('spotifyVibes')}
+                className={`flex-1 py-2 px-4 rounded-full text-xs font-bold transition-all ${
+                  musicSubTab === 'spotifyVibes'
+                    ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-xs'
+                    : 'text-[#6E3C48] hover:bg-pink-50'
+                }`}
+              >
+                🎧 All Cycle Playlists
+              </button>
+            </div>
+
+            {musicSubTab === 'sakhiMusic' ? <SakhiMusic /> : <SpotifyVibes />}
+          </div>
+        )}
+
+        {/* Tab 12: Calendar & Trends */}
         {activeTab === 'calendar' && (
           <div className="max-w-4xl mx-auto animate-in fade-in duration-300">
             <CycleCalendar settings={cycleSettings} status={cycleStatus} logs={dailyLogs} />
           </div>
         )}
 
-        {/* Tab 6: Account & Sanctuary */}
+        {/* Tab 13: Personal Sanctuary Account */}
         {activeTab === 'account' && (
           <div className="animate-in fade-in duration-300">
             <AccountView
@@ -501,7 +1019,7 @@ function AppContent() {
       </main>
 
       {/* Floating Bottom Nav for Mobile */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#FFFDFB]/95 backdrop-blur-md border-t border-[#F4DFE2] px-3 py-2 flex items-center justify-around shadow-lg">
+      <div className="xl:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-[#F4DFE2] px-3 py-2 flex items-center justify-around shadow-lg">
         <button
           type="button"
           onClick={() => setActiveTab('home')}
@@ -512,45 +1030,62 @@ function AppContent() {
           <Activity className="w-4 h-4" />
           <span>{t.home}</span>
         </button>
+
         <button
           type="button"
-          onClick={() => setActiveTab('phaseGuide')}
-          className={`flex flex-col items-center gap-1 text-[10px] font-semibold transition-colors ${
-            activeTab === 'phaseGuide' ? 'text-[#A63A50]' : 'text-[#8A5A66]'
+          onClick={() => setActiveTab('talkToSakhi')}
+          className={`flex flex-col items-center gap-1 text-[10px] font-bold transition-colors ${
+            activeTab === 'talkToSakhi' ? 'text-pink-600' : 'text-[#8A5A66]'
           }`}
         >
-          <BookOpen className="w-4 h-4" />
-          <span>{t.phaseGuide}</span>
+          <div className="p-2 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white -mt-4 shadow-md border-2 border-white">
+            <Mic className="w-4 h-4 animate-pulse" />
+          </div>
+          <span>Talk</span>
         </button>
+
         <button
           type="button"
-          onClick={() => setActiveTab('sakhiAi')}
+          onClick={() => setActiveTab('doctors')}
           className={`flex flex-col items-center gap-1 text-[10px] font-semibold transition-colors ${
-            activeTab === 'sakhiAi' ? 'text-[#A63A50]' : 'text-[#8A5A66]'
+            activeTab === 'doctors' ? 'text-[#A63A50]' : 'text-[#8A5A66]'
           }`}
         >
-          <Sparkles className="w-4 h-4" />
-          <span>{t.sakhiAi}</span>
+          <Stethoscope className="w-4 h-4" />
+          <span>Gynac</span>
         </button>
+
         <button
           type="button"
-          onClick={() => setActiveTab('symptoms')}
+          onClick={() => setActiveTab('vibes')}
           className={`flex flex-col items-center gap-1 text-[10px] font-semibold transition-colors ${
-            activeTab === 'symptoms' ? 'text-[#A63A50]' : 'text-[#8A5A66]'
+            activeTab === 'vibes' ? 'text-[#A63A50]' : 'text-[#8A5A66]'
           }`}
         >
-          <Droplets className="w-4 h-4" />
-          <span>{t.symptoms}</span>
+          <Music className="w-4 h-4" />
+          <span>Music</span>
         </button>
+
         <button
           type="button"
-          onClick={() => setActiveTab('calendar')}
+          onClick={() => setActiveTab('products')}
           className={`flex flex-col items-center gap-1 text-[10px] font-semibold transition-colors ${
-            activeTab === 'calendar' ? 'text-[#A63A50]' : 'text-[#8A5A66]'
+            activeTab === 'products' ? 'text-[#A63A50]' : 'text-[#8A5A66]'
           }`}
         >
-          <Calendar className="w-4 h-4" />
-          <span>{t.insights}</span>
+          <Heart className="w-4 h-4" />
+          <span>Guide</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('forum')}
+          className={`flex flex-col items-center gap-1 text-[10px] font-semibold transition-colors ${
+            activeTab === 'forum' ? 'text-[#A63A50]' : 'text-[#8A5A66]'
+          }`}
+        >
+          <Users className="w-4 h-4" />
+          <span>Forum</span>
         </button>
       </div>
 
@@ -565,9 +1100,9 @@ function AppContent() {
       />
 
       {/* Official Footer with Brand Logo */}
-      <footer className="mt-auto border-t border-[#F4DFE2] bg-[#FFFDFB] py-10 px-4 sm:px-6 lg:px-8 pb-20 lg:pb-10">
+      <footer className="mt-auto border-t border-[#F4DFE2] bg-white/70 backdrop-blur-md py-10 px-4 sm:px-6 lg:px-8 pb-24 xl:pb-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-          <BrandLogo size="sm" showSubtitle={true} onClick={() => setActiveTab('home')} />
+          <BrandLogo size="md" variant="full" onClick={() => setActiveTab('home')} />
 
           <p className="text-xs text-[#8A5A66] max-w-md">
             {t.wellnessCompanionFooter}
