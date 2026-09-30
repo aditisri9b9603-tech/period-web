@@ -12,7 +12,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = parseInt(process.env.PORT || '3000', 10);
+
+function getArg(flag: string): string | undefined {
+  const idx = process.argv.indexOf(flag);
+  if (idx !== -1 && idx + 1 < process.argv.length) {
+    return process.argv[idx + 1];
+  }
+  return undefined;
+}
+
+const PORT = parseInt(getArg('--port') || process.env.PORT || '3000', 10);
+const HOST = getArg('--host') || process.env.HOST || '0.0.0.0';
 
 app.use(express.json());
 
@@ -565,7 +575,7 @@ ${userCycleContext ? `Context: User is on Day ${userCycleContext.currentDay} (${
 async function startServer() {
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: { middlewareMode: true, hmr: process.env.DISABLE_HMR !== 'true' },
       appType: 'spa',
     });
     app.use(vite.middlewares);
@@ -577,8 +587,12 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Sakhi Cycle server listening on http://0.0.0.0:${PORT}`);
+  const server = app.listen(PORT, HOST, () => {
+    console.log(`Sakhi Cycle server listening on http://${HOST}:${PORT}`);
+  });
+
+  server.on('error', (err: any) => {
+    console.error('Server error:', err);
   });
 }
 
