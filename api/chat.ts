@@ -5,7 +5,14 @@ const apiKey = process.env.GEMINI_API_KEY || '';
 let aiClient: GoogleGenAI | null = null;
 if (apiKey) {
   try {
-    aiClient = new GoogleGenAI({});
+    aiClient = new GoogleGenAI({
+      apiKey,
+      httpOptions: {
+        headers: {
+          'User-Agent': 'aistudio-build',
+        },
+      },
+    });
   } catch (err) {
     console.error('Failed to initialize GoogleGenAI client on Vercel:', err);
   }
@@ -72,7 +79,7 @@ ${
 7. Keep your response conversational, concise (2-4 caring paragraphs), clear, formatted with gentle bullet points when suggesting soothing remedies.`;
     }
 
-    let modelName = 'gemini-3.5-flash';
+    let modelName = 'gemini-3.8-flash';
     let callConfig: Record<string, unknown> = {
       systemInstruction,
       temperature: 0.7,

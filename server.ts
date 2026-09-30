@@ -2,10 +2,14 @@ import express, { Request, Response } from 'express';
 import { createServer as createViteServer } from 'vite';
 import dotenv from 'dotenv';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import crypto from 'crypto';
 import { GoogleGenAI } from '@google/genai';
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3000', 10);
@@ -313,7 +317,14 @@ const apiKey = process.env.GEMINI_API_KEY || '';
 let aiClient: GoogleGenAI | null = null;
 if (apiKey) {
   try {
-    aiClient = new GoogleGenAI({});
+    aiClient = new GoogleGenAI({
+      apiKey,
+      httpOptions: {
+        headers: {
+          'User-Agent': 'aistudio-build',
+        },
+      },
+    });
   } catch (err) {
     console.error('Failed to initialize GoogleGenAI client:', err);
   }
@@ -380,7 +391,7 @@ ${
     }
 
     // Model selection based on user preference
-    let modelName = 'gemini-3.5-flash';
+    let modelName = 'gemini-3.8-flash';
     let callConfig: Record<string, unknown> = {
       systemInstruction,
       temperature: 0.7,
@@ -427,11 +438,11 @@ ${
         return;
       } catch (geminiError: unknown) {
         console.warn('Gemini API call failed, falling back to backup model or graceful response:', geminiError);
-        // If high_thinking failed (e.g. paid tier or quota), try gemini-3.5-flash fallback
+        // If high_thinking failed (e.g. paid tier or quota), try gemini-3.8-flash fallback
         if (mode === 'high_thinking') {
           try {
             const fallbackResp = await aiClient.models.generateContent({
-              model: 'gemini-3.5-flash',
+              model: 'gemini-3.8-flash',
               contents: messages.map((m: { role: string; content: string }) => ({
                 role: m.role === 'assistant' ? 'model' : 'user',
                 parts: [{ text: m.content }],
@@ -440,7 +451,7 @@ ${
             });
             res.json({
               reply: fallbackResp.text || FALLBACK_RESPONSES[currentLang],
-              model: 'gemini-3.5-flash',
+              model: 'gemini-3.8-flash',
               mode: 'standard',
               fallbackNotice: true,
             });
