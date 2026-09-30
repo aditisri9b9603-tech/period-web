@@ -35,6 +35,14 @@ export interface TranslationDictionary {
   doctors: string;
   vibes: string;
   insights: string;
+  play: string;
+  videos: string;
+  marketplace: string;
+  rewards: string;
+  circle: string;
+  gynac: string;
+  profile: string;
+  cycleTrends: string;
   settings: string;
   signIn: string;
   signOut: string;
@@ -278,6 +286,14 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     doctors: "Doctors & Clinics",
     vibes: "Vibes & Spotify",
     insights: "Calendar & Trends",
+    play: "Sakhi Play",
+    videos: "Sakhi Videos",
+    marketplace: "Marketplace",
+    rewards: "Sakhi Rewards",
+    circle: "Sakhi Circle",
+    gynac: "Find Gynac",
+    profile: "Profile",
+    cycleTrends: "Cycle Trends",
     settings: "Settings",
     signIn: "Sign In",
     signOut: "Sign Out",
@@ -515,6 +531,14 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     doctors: "डॉक्टर व अस्पताल",
     vibes: "संगीत व सुकून (Spotify)",
     insights: "कैलेंडर और रुझान",
+    play: "सखी प्ले 🎀",
+    videos: "सखी वीडियो 🎥",
+    marketplace: "मार्केट 🛍️",
+    rewards: "रिवॉर्ड्स ✨",
+    circle: "सखी सर्कल 💬",
+    gynac: "गायनैक 🩺",
+    profile: "प्रोफ़ाइल 👤",
+    cycleTrends: "साइकिल ट्रेंड्स 📈",
     settings: "सेटिंग्स",
     signIn: "साइन इन करें",
     signOut: "साइन आउट",
@@ -752,6 +776,14 @@ export const translations: Record<SupportedLanguage, TranslationDictionary> = {
     doctors: "Doctors & Clinics",
     vibes: "Vibes & Spotify",
     insights: "Calendar & Trends",
+    play: "Sakhi Play 🎀",
+    videos: "Sakhi Videos 🎥",
+    marketplace: "Marketplace 🛍️",
+    rewards: "Sakhi Rewards ✨",
+    circle: "Sakhi Circle 💬",
+    gynac: "Find Gynac 🩺",
+    profile: "Profile 👤",
+    cycleTrends: "Cycle Trends 📈",
     settings: "Settings",
     signIn: "Sign In Karein",
     signOut: "Sign Out",

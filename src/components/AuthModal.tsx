@@ -3,6 +3,14 @@ import { useTranslation } from '../i18n/context';
 import { UserProfile, CycleSettings } from '../types/cycle';
 import { BrandLogo } from './BrandLogo';
 import {
+  auth,
+  signUpWithEmail,
+  signInWithEmail,
+  signInWithGoogle,
+  logoutUser,
+  resetPasswordForEmail,
+} from '../lib/firebase';
+import {
   X,
   Mail,
   Lock,
@@ -102,7 +110,27 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     onClose();
   };
 
-  // 1. Submit Sign Up
+  // Google Sign-In
+  const handleGoogleAuth = async () => {
+    setIsLoading(true);
+    setErrorMessage(null);
+    try {
+      const profile = await signInWithGoogle();
+      onUserChange(profile);
+      setIsLoading(false);
+      onClose();
+    } catch (err: any) {
+      console.error('Google Sign-in error:', err);
+      if (err?.code !== 'auth/popup-closed-by-user') {
+        setErrorMessage(
+          err?.message || (language === 'hi' ? 'Google साइन-इन विफल रहा।' : 'Google Sign-in could not be completed.')
+        );
+      }
+      setIsLoading(false);
+    }
+  };
+
+  // 1. Submit Sign Up with Firebase + Backend Sync
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
@@ -126,42 +154,77 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     setIsLoading(true);
     try {
-      const res = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      let createdUser: UserProfile | null = null;
+
+      // 1. Firebase Auth Registration
+      try {
+        createdUser = await signUpWithEmail(name, email, password, currentUser.cycleSettings);
+      } catch (fbErr: any) {
+        console.warn('[Firebase Auth] signUpWithEmail note:', fbErr?.code || fbErr?.message);
+        if (fbErr?.code === 'auth/email-already-in-use') {
+          setErrorMessage(
+            language === 'hi'
+              ? 'इस ईमेल के साथ पहले से अकाउंट मौजूद है। कृपया साइन इन करें।'
+              : 'An account with this email already exists. Please sign in.'
+          );
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // 2. Server mirror for demo credentials & token
+      try {
+        const res = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: name.trim(),
+            email: email.trim(),
+            password,
+            cycleSettings: currentUser.cycleSettings,
+          }),
+        });
+
+        const data = await res.json();
+        if (data.token) {
+          if (rememberMe) {
+            localStorage.setItem('sakhi_auth_token', data.token);
+          } else {
+            sessionStorage.setItem('sakhi_auth_token', data.token);
+          }
+        }
+        if (!createdUser && data.user) {
+          createdUser = data.user;
+        }
+      } catch (srvErr) {
+        console.warn('[API Auth] signup mirror error:', srvErr);
+      }
+
+      if (!createdUser) {
+        createdUser = {
+          id: `usr_${Date.now()}`,
           name: name.trim(),
           email: email.trim(),
-          password,
-          cycleSettings: currentUser.cycleSettings,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        setErrorMessage(data.error || 'Failed to create account.');
-        setIsLoading(false);
-        return;
+          isGuest: false,
+          cycleSettings: currentUser.cycleSettings || {
+            lastPeriodDate: new Date().toISOString().split('T')[0],
+            cycleLength: 28,
+            periodDuration: 5,
+          },
+        };
       }
 
-      // Store token safely in session/local storage
-      if (rememberMe) {
-        localStorage.setItem('sakhi_auth_token', data.token);
-      } else {
-        sessionStorage.setItem('sakhi_auth_token', data.token);
-      }
-
-      onUserChange(data.user);
+      onUserChange(createdUser);
       setIsLoading(false);
       setMode('onboarding');
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setErrorMessage('Network error during registration.');
+      setErrorMessage(err?.message || (language === 'hi' ? 'पंजीकरण में त्रुटि हुई।' : 'Network error during registration.'));
       setIsLoading(false);
     }
   };
 
-  // 2. Submit Log In
+  // 2. Submit Log In with Firebase + Backend Sync
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
@@ -177,34 +240,67 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     setIsLoading(true);
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: email.trim(),
-          password,
-        }),
-      });
+      let loggedInUser: UserProfile | null = null;
+      let firebaseSucceeded = false;
 
-      const data = await res.json();
-      if (!res.ok) {
-        setErrorMessage(data.error || 'Invalid email or password.');
+      // Try Firebase Auth Sign In
+      try {
+        loggedInUser = await signInWithEmail(email, password);
+        firebaseSucceeded = true;
+      } catch (fbErr: any) {
+        console.warn('[Firebase Auth] signInWithEmail note:', fbErr?.code || fbErr?.message);
+      }
+
+      // Try server mirror / demo user
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: email.trim(),
+            password,
+          }),
+        });
+
+        const data = await res.json();
+        if (res.ok && data.user) {
+          if (rememberMe) {
+            localStorage.setItem('sakhi_auth_token', data.token);
+          } else {
+            sessionStorage.setItem('sakhi_auth_token', data.token);
+          }
+          if (!loggedInUser) {
+            loggedInUser = data.user;
+          }
+        } else if (!firebaseSucceeded) {
+          setErrorMessage(
+            data.error ||
+              (language === 'hi' ? 'ईमेल या पासवर्ड गलत है।' : 'Invalid email or password.')
+          );
+          setIsLoading(false);
+          return;
+        }
+      } catch (srvErr) {
+        if (!firebaseSucceeded) {
+          setErrorMessage(language === 'hi' ? 'साइन इन करने में समस्या आई।' : 'Network error while signing in.');
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      if (loggedInUser) {
+        onUserChange(loggedInUser);
         setIsLoading(false);
-        return;
-      }
-
-      if (rememberMe) {
-        localStorage.setItem('sakhi_auth_token', data.token);
+        onClose();
       } else {
-        sessionStorage.setItem('sakhi_auth_token', data.token);
+        setErrorMessage(
+          language === 'hi' ? 'कृपया ईमेल और पासवर्ड जांचें।' : 'Invalid credentials. Please verify and try again.'
+        );
+        setIsLoading(false);
       }
-
-      onUserChange(data.user);
-      setIsLoading(false);
-      onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setErrorMessage('Network error while signing in.');
+      setErrorMessage(err?.message || 'Login service encountered an issue.');
       setIsLoading(false);
     }
   };
@@ -221,6 +317,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     setIsLoading(true);
     try {
+      try {
+        await resetPasswordForEmail(email.trim());
+      } catch (fbErr) {
+        console.warn('[Firebase Auth] reset password email note:', fbErr);
+      }
+
       const res = await fetch('/api/auth/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -232,11 +334,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       if (data.demoCode) {
         setDemoCodeHint(data.demoCode);
       }
-      setSuccessMessage(data.message || 'Verification instructions sent.');
+      setSuccessMessage(
+        data.message ||
+          (language === 'hi' ? 'पासवर्ड रीसेट वेरिफिकेशन कोड भेजा गया है।' : 'Verification instructions sent.')
+      );
       setMode('resetPassword');
     } catch (err) {
       console.error(err);
-      setErrorMessage('Could not send reset code.');
+      setErrorMessage(language === 'hi' ? 'रीसेट कोड नहीं भेजा जा सका।' : 'Could not send reset code.');
       setIsLoading(false);
     }
   };
@@ -274,7 +379,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         return;
       }
 
-      setSuccessMessage(data.message || 'Password reset successfully!');
+      setSuccessMessage(
+        data.message ||
+          (language === 'hi' ? 'पासवर्ड सफलतापूर्वक बदल दिया गया!' : 'Password reset successfully!')
+      );
       setTimeout(() => {
         setMode('login');
       }, 1500);
@@ -302,6 +410,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   // 6. Handle Logout
   const handleLogout = async () => {
+    try {
+      await logoutUser();
+    } catch (fbErr) {
+      console.warn('[Firebase Auth] logout note:', fbErr);
+    }
     try {
       const token = localStorage.getItem('sakhi_auth_token') || sessionStorage.getItem('sakhi_auth_token');
       if (token) {
@@ -380,6 +493,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             </div>
 
             <div className="space-y-3 pt-2">
+              <button
+                type="button"
+                onClick={handleGoogleAuth}
+                className="w-full py-3 rounded-full text-xs sm:text-sm font-bold bg-white text-[#4A1E29] border border-pink-200 hover:bg-pink-50/70 shadow-2xs transition-all active:scale-98 flex items-center justify-center gap-2.5"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                </svg>
+                <span>{language === 'hi' ? 'Google के साथ जारी रखें' : 'Continue with Google'}</span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => switchMode('login')}
@@ -497,7 +624,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 rounded-full text-sm font-bold bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-md shadow-rose-200 transition-all active:scale-98 flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-full text-sm font-bold bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white shadow-md shadow-rose-200 transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
             >
               {isLoading ? (
                 <>
@@ -505,8 +632,30 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <span>{language === 'hi' ? 'सत्यापित कर रहे हैं...' : 'Signing In...'}</span>
                 </>
               ) : (
-                <span>{language === 'hi' ? 'साइन इन करें' : 'Sign In'}</span>
+                <span>{language === 'hi' ? 'साइन इन करें' : 'Sign In with Email'}</span>
               )}
+            </button>
+
+            <div className="relative flex items-center justify-center my-2">
+              <div className="border-t border-pink-100 w-full" />
+              <span className="bg-[#FFFDFB] px-3 text-[11px] font-semibold text-[#A66F7B]">
+                {language === 'hi' ? 'या फिर' : 'OR'}
+              </span>
+              <div className="border-t border-pink-100 w-full" />
+            </div>
+
+            <button
+              type="button"
+              onClick={handleGoogleAuth}
+              className="w-full py-2.5 rounded-full text-xs font-bold bg-white text-[#4A1E29] border border-pink-200 hover:bg-pink-50/70 shadow-2xs transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+              </svg>
+              <span>{language === 'hi' ? 'Google के साथ साइन इन' : 'Continue with Google'}</span>
             </button>
 
             {/* Switch to Sign Up */}
