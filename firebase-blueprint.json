@@ -42,6 +42,21 @@
         "createdAt": { "type": "string", "maxLength": 50 }
       },
       "required": ["userId", "activity", "tokensAwarded", "date"]
+    },
+    "MarketplaceOrder": {
+      "title": "MarketplaceOrder",
+      "description": "User menstrual product order with shipping and payment status.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "orderNumber": { "type": "string", "maxLength": 50 },
+        "paidRupees": { "type": "number" },
+        "paidTokens": { "type": "number" },
+        "paymentStatus": { "type": "string", "maxLength": 30 },
+        "deliveryStatus": { "type": "string", "maxLength": 30 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["userId", "orderNumber", "paidRupees", "paymentStatus", "deliveryStatus"]
     }
   },
   "firestore": {
@@ -56,6 +71,10 @@
     "/users/{userId}/care_logs/{logId}": {
       "schema": { "$ref": "CareActivityLog" },
       "description": "Daily care activities completed by the user."
+    },
+    "/users/{userId}/orders/{orderId}": {
+      "schema": { "$ref": "MarketplaceOrder" },
+      "description": "Subcollection of marketplace orders placed by this user."
     }
   }
 }

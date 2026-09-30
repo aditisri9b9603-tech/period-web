@@ -29,6 +29,7 @@ import { TokenProvider, useTokens } from './context/TokenContext';
 import { TokenCelebrationToast } from './components/TokenCelebrationToast';
 import { SakhiWalletModal } from './components/SakhiWalletModal';
 import { TodaysCareCard } from './components/TodaysCareCard';
+import { SakhiPlayCard } from './components/SakhiPlayCard';
 import { SakhiRewards } from './components/SakhiRewards';
 import { CycleSettings, DailySymptomLog, UserProfile, calculateCycleStatus } from './types/cycle';
 import {
@@ -435,6 +436,32 @@ function AppContent() {
                     <ChevronRight className="w-3.5 h-3.5 text-rose-400" />
                   </button>
 
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setExploreInitialSection('play');
+                      setActiveTab('explore');
+                      setIsExploreMenuOpen(false);
+                    }}
+                    className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-pink-50 transition-colors text-[#5C2E38]"
+                  >
+                    <span className="text-sm">🎀</span>
+                    <span>Sakhi Play & Games</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setExploreInitialSection('marketplace');
+                      setActiveTab('explore');
+                      setIsExploreMenuOpen(false);
+                    }}
+                    className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-pink-50 transition-colors text-[#5C2E38]"
+                  >
+                    <span className="text-sm">🛍️</span>
+                    <span>Sakhi Marketplace</span>
+                  </button>
+
                   <div className="h-px bg-pink-100 my-1" />
 
                   <button
@@ -661,6 +688,35 @@ function AppContent() {
               <span>✨ Explore Discovery Sanctuary (Gynac, Music, Guide)</span>
             </button>
 
+            {/* Quick Play & Marketplace Links */}
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setExploreInitialSection('play');
+                  setActiveTab('explore');
+                  setIsMobileMenuOpen(false);
+                }}
+                className="py-2.5 px-3 rounded-2xl bg-gradient-to-r from-pink-100 to-rose-100 border border-pink-200 text-rose-800 text-xs font-bold flex items-center justify-center gap-1.5"
+              >
+                <span>🎀</span>
+                <span>Sakhi Play</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setExploreInitialSection('marketplace');
+                  setActiveTab('explore');
+                  setIsMobileMenuOpen(false);
+                }}
+                className="py-2.5 px-3 rounded-2xl bg-gradient-to-r from-rose-100 to-amber-100 border border-amber-200 text-amber-900 text-xs font-bold flex items-center justify-center gap-1.5"
+              >
+                <span>🛍️</span>
+                <span>Marketplace</span>
+              </button>
+            </div>
+
             {/* Section 1: Quick Care */}
             <div className="space-y-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-rose-700 px-2">
@@ -871,6 +927,22 @@ function AppContent() {
                 cycleStatus={cycleStatus}
                 onOpenSymptomLogger={() => setActiveTab('symptoms')}
                 onOpenPhaseGuide={() => setActiveTab('phaseGuide')}
+              />
+            </div>
+
+            {/* Sakhi Play Home Card: "A tiny happy break for you 💗" */}
+            <div className="max-w-3xl mx-auto w-full">
+              <SakhiPlayCard
+                onOpenPlay={() => {
+                  setExploreInitialSection('play');
+                  setActiveTab('explore');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                onOpenAffirmation={() => {
+                  setExploreInitialSection('play');
+                  setActiveTab('explore');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
               />
             </div>
 

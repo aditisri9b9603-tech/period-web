@@ -7,6 +7,8 @@ import { CompareProducts } from './CompareProducts';
 import { AnonymousForum } from './AnonymousForum';
 import { SakhiRewards } from './SakhiRewards';
 import { SakhiVideoHub } from './SakhiVideoHub';
+import { SakhiPlay } from './SakhiPlay';
+import { SakhiMarketplace } from './SakhiMarketplace';
 import { GmailCareCompanion } from './GmailCareCompanion';
 import {
   Sparkles,
@@ -23,9 +25,21 @@ import {
   Video,
   Gift,
   Mail,
+  Gamepad2,
 } from 'lucide-react';
 
-export type ExploreSection = 'hub' | 'videos' | 'doctors' | 'music' | 'guide' | 'compare' | 'circle' | 'rewards' | 'gmail';
+export type ExploreSection =
+  | 'hub'
+  | 'play'
+  | 'marketplace'
+  | 'videos'
+  | 'doctors'
+  | 'music'
+  | 'guide'
+  | 'compare'
+  | 'circle'
+  | 'rewards'
+  | 'gmail';
 
 interface ExploreHubProps {
   initialSection?: ExploreSection;
@@ -46,6 +60,30 @@ export const ExploreHub: React.FC<ExploreHubProps> = ({
   };
 
   const exploreItems = [
+    {
+      id: 'play' as ExploreSection,
+      emoji: '🎀',
+      title: 'Sakhi Play',
+      hindiTitle: 'सखी प्ले व गेम्स',
+      subtitle: 'Cute mini-games, daily affirmations, bubble calm & memory bloom',
+      hindiSubtitle: 'मनोरंजक प्यारे खेल, सकारात्मक विचार और माइंडफुलनेस विश्राम',
+      accent: 'from-pink-500 to-rose-500',
+      bgGlow: 'bg-pink-50/80 border-pink-200/80',
+      badge: '🎀 Wholesome Fun',
+      badgeColor: 'text-rose-700 bg-pink-100/70 border-pink-200',
+    },
+    {
+      id: 'marketplace' as ExploreSection,
+      emoji: '🛍️',
+      title: 'Sakhi Marketplace',
+      hindiTitle: 'सखी मार्केटप्लेस',
+      subtitle: 'Direct ethical period brands, transparent prices & token checkout',
+      hindiSubtitle: 'सत्यापित भारतीय स्टार्टअप्स से किफायती पैड, कप और वेलनेस किट',
+      accent: 'from-rose-500 to-amber-500',
+      bgGlow: 'bg-rose-50/80 border-amber-200/80',
+      badge: '🌱 Support Local Brands',
+      badgeColor: 'text-amber-800 bg-amber-100/70 border-amber-200',
+    },
     {
       id: 'videos' as ExploreSection,
       emoji: '🌸',
@@ -147,6 +185,32 @@ export const ExploreHub: React.FC<ExploreHubProps> = ({
         >
           <span>✨</span>
           <span>Explore All</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => handleSwitchSection('play')}
+          className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
+            activeSection === 'play'
+              ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-xs'
+              : 'text-[#6E3C48] hover:bg-pink-50'
+          }`}
+        >
+          <span>🎀</span>
+          <span>Sakhi Play</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => handleSwitchSection('marketplace')}
+          className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
+            activeSection === 'marketplace'
+              ? 'bg-gradient-to-r from-rose-500 to-amber-500 text-white shadow-xs'
+              : 'text-[#6E3C48] hover:bg-rose-50'
+          }`}
+        >
+          <span>🛍️</span>
+          <span>Marketplace</span>
         </button>
 
         <button
@@ -312,6 +376,18 @@ export const ExploreHub: React.FC<ExploreHubProps> = ({
       )}
 
       {/* Sub-section views */}
+      {activeSection === 'play' && (
+        <div className="animate-in fade-in duration-300">
+          <SakhiPlay />
+        </div>
+      )}
+
+      {activeSection === 'marketplace' && (
+        <div className="animate-in fade-in duration-300">
+          <SakhiMarketplace />
+        </div>
+      )}
+
       {activeSection === 'videos' && (
         <div className="animate-in fade-in duration-300">
           <SakhiVideoHub />
