@@ -42,6 +42,47 @@
   }
 }
 
+@keyframes fall-petal-gentle {
+  0% {
+    transform: translateY(-20px) rotate(0deg) translateX(0px);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.75;
+  }
+  50% {
+    transform: translateY(220px) rotate(140deg) translateX(30px);
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(440px) rotate(280deg) translateX(-20px);
+    opacity: 0;
+  }
+}
+
+@keyframes drift-cloud {
+  0% {
+    transform: translateX(-40px);
+  }
+  50% {
+    transform: translateX(40px);
+  }
+  100% {
+    transform: translateX(-40px);
+  }
+}
+
+.animate-fall-petal {
+  animation: fall-petal-gentle 18s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-drift-cloud {
+  animation: drift-cloud 45s ease-in-out infinite;
+}
+
 @keyframes pulse-soft {
   0%, 100% {
     transform: scale(1);
