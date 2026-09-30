@@ -1,0 +1,6 @@
+{
+  "name": "Sakhi Cycle - Holistic Menstrual & Hormonal Wellness",
+  "description": "Your caring, multilingual menstrual cycle companion. Track your period, sync your lifestyle with your cycle phases, and chat with Sakhi AI for personalized wellness guidance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
