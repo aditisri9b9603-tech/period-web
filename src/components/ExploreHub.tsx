@@ -5,7 +5,9 @@ import { SakhiMusic } from './SakhiMusic';
 import { PeriodProductGuide } from './PeriodProductGuide';
 import { CompareProducts } from './CompareProducts';
 import { AnonymousForum } from './AnonymousForum';
+import { SakhiRewards } from './SakhiRewards';
 import { SakhiVideoHub } from './SakhiVideoHub';
+import { GmailCareCompanion } from './GmailCareCompanion';
 import {
   Sparkles,
   Stethoscope,
@@ -19,9 +21,11 @@ import {
   Headphones,
   ShoppingBag,
   Video,
+  Gift,
+  Mail,
 } from 'lucide-react';
 
-export type ExploreSection = 'hub' | 'videos' | 'doctors' | 'music' | 'guide' | 'compare' | 'circle';
+export type ExploreSection = 'hub' | 'videos' | 'doctors' | 'music' | 'guide' | 'compare' | 'circle' | 'rewards' | 'gmail';
 
 interface ExploreHubProps {
   initialSection?: ExploreSection;
@@ -113,6 +117,18 @@ export const ExploreHub: React.FC<ExploreHubProps> = ({
       bgGlow: 'bg-fuchsia-50/80 border-fuchsia-200/80',
       badge: 'Anonymous & Safe',
       badgeColor: 'text-fuchsia-800 bg-fuchsia-100/70 border-fuchsia-200',
+    },
+    {
+      id: 'rewards' as ExploreSection,
+      emoji: '🎀',
+      title: 'Sakhi Rewards',
+      hindiTitle: 'सखी रिवॉर्ड्स',
+      subtitle: 'Redeem organic pads, cups & wellness kits with Sakhi Tokens',
+      hindiSubtitle: 'सखी टोकन से ऑर्गेनिक पैड, कप और वेलनेस किट रिडीम करें',
+      accent: 'from-rose-500 to-amber-500',
+      bgGlow: 'bg-rose-50/80 border-amber-200/80',
+      badge: '✨ Sakhi Tokens Shop',
+      badgeColor: 'text-amber-800 bg-amber-100/70 border-amber-200',
     },
   ];
 
@@ -209,6 +225,19 @@ export const ExploreHub: React.FC<ExploreHubProps> = ({
         >
           <span>💬</span>
           <span>Sakhi Circle</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => handleSwitchSection('rewards')}
+          className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
+            activeSection === 'rewards'
+              ? 'bg-gradient-to-r from-rose-500 to-amber-500 text-white shadow-xs'
+              : 'text-[#6E3C48] hover:bg-rose-50'
+          }`}
+        >
+          <span>🎀</span>
+          <span>Sakhi Rewards</span>
         </button>
       </div>
 
@@ -316,6 +345,12 @@ export const ExploreHub: React.FC<ExploreHubProps> = ({
       {activeSection === 'circle' && (
         <div className="animate-in fade-in duration-300">
           <AnonymousForum />
+        </div>
+      )}
+
+      {activeSection === 'rewards' && (
+        <div className="animate-in fade-in duration-300">
+          <SakhiRewards />
         </div>
       )}
     </div>

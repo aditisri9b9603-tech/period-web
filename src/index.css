@@ -5,6 +5,7 @@
     --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-serif: 'Playfair Display', Georgia, serif;
     --font-indic: 'Rozha One', 'Outfit', sans-serif;
+    --font-devanagari: 'Noto Sans Devanagari', 'Outfit', sans-serif;
   }
 
   body {
@@ -16,6 +17,12 @@
 
   h1, h2, .font-serif {
     font-family: var(--font-serif);
+  }
+
+  [lang="hi"], .font-hindi, .font-devanagari {
+    font-family: var(--font-devanagari);
+    line-height: 1.6;
+    letter-spacing: 0.01em;
   }
 }
 

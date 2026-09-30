@@ -25,6 +25,11 @@ import { SettingsModal } from './components/SettingsModal';
 import { AccountView } from './components/AccountView';
 import { NotificationCenter } from './components/NotificationCenter';
 import { AuthModal, AuthViewMode } from './components/AuthModal';
+import { TokenProvider, useTokens } from './context/TokenContext';
+import { TokenCelebrationToast } from './components/TokenCelebrationToast';
+import { SakhiWalletModal } from './components/SakhiWalletModal';
+import { TodaysCareCard } from './components/TodaysCareCard';
+import { SakhiRewards } from './components/SakhiRewards';
 import { CycleSettings, DailySymptomLog, UserProfile, calculateCycleStatus } from './types/cycle';
 import {
   Heart,
@@ -89,6 +94,10 @@ function AppContent() {
   const [productSubTab, setProductSubTab] = useState<'guide' | 'compare' | 'tutorials'>('guide');
   const [doctorSubTab, setDoctorSubTab] = useState<'gynac' | 'hospitals'>('gynac');
   const [musicSubTab, setMusicSubTab] = useState<'sakhiMusic' | 'spotifyVibes'>('sakhiMusic');
+
+  // Sakhi Tokens & Streak system
+  const { tokens, streak } = useTokens();
+  const [isWalletOpen, setIsWalletOpen] = useState(false);
 
   // Auth modal state
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -533,6 +542,20 @@ function AppContent() {
 
           {/* Right Header Tools */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Sakhi Tokens & Streak Pill */}
+            <button
+              type="button"
+              onClick={() => setIsWalletOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-50 to-pink-50 border border-amber-200/90 text-amber-900 shadow-2xs hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              title="Sakhi Wallet & Rewards"
+            >
+              <span className="text-amber-500 font-bold">✨</span>
+              <span className="font-bold text-xs text-[#5C2E38]">{tokens.toLocaleString()}</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-rose-100 text-rose-700 font-bold hidden sm:inline-flex items-center gap-0.5">
+                🔥 {streak}d
+              </span>
+            </button>
+
             {/* Simple In-App Notification Center */}
             <NotificationCenter
               cycleStatus={cycleStatus}
@@ -605,6 +628,24 @@ function AppContent() {
             >
               <Mic className="w-4 h-4 animate-pulse" />
               <span>Talk to Sakhi 🌸 (Voice Bestie)</span>
+            </button>
+
+            {/* Mobile Sakhi Tokens & Streak Banner */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsWalletOpen(true);
+                setIsMobileMenuOpen(false);
+              }}
+              className="w-full py-2.5 px-4 rounded-2xl text-xs font-bold bg-gradient-to-r from-amber-50 to-pink-50 border border-amber-200 text-amber-900 shadow-2xs flex items-center justify-between"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-base">✨</span>
+                <span>My Sakhi Tokens: <span className="font-extrabold text-[#7A1E34]">{tokens.toLocaleString()}</span></span>
+              </div>
+              <span className="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[11px] font-bold">
+                🔥 {streak} Day Streak
+              </span>
             </button>
 
             {/* Quick Explore Sanctuary Hub */}
@@ -822,6 +863,15 @@ function AppContent() {
                 <Mic className="w-4 h-4 animate-pulse" />
                 <span>Tap & Talk Now</span>
               </div>
+            </div>
+
+            {/* Today's Care & Sakhi Tokens System */}
+            <div className="max-w-3xl mx-auto w-full">
+              <TodaysCareCard
+                cycleStatus={cycleStatus}
+                onOpenSymptomLogger={() => setActiveTab('symptoms')}
+                onOpenPhaseGuide={() => setActiveTab('phaseGuide')}
+              />
             </div>
 
             {/* Central Wheel & Status */}
@@ -1365,6 +1415,26 @@ function AppContent() {
         initialMode={authModalMode}
       />
 
+      {/* Sakhi Token Celebration Toast (Floating Sparkles & Badges) */}
+      <TokenCelebrationToast />
+
+      {/* Sakhi Wallet & Rewards Modal */}
+      <SakhiWalletModal
+        isOpen={isWalletOpen}
+        onClose={() => setIsWalletOpen(false)}
+        onNavigateToRewards={() => {
+          setIsWalletOpen(false);
+          setExploreInitialSection('rewards');
+          setActiveTab('explore');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onNavigateToCare={() => {
+          setIsWalletOpen(false);
+          setActiveTab('home');
+          window.scrollTo({ top: 300, behavior: 'smooth' });
+        }}
+      />
+
       {/* Official Footer with Brand Logo */}
       <footer className="mt-auto border-t border-[#F4DFE2] bg-white/70 backdrop-blur-md py-10 px-4 sm:px-6 lg:px-8 pb-24 xl:pb-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
@@ -1386,7 +1456,9 @@ function AppContent() {
 export default function App() {
   return (
     <LanguageProvider>
-      <AppContent />
+      <TokenProvider>
+        <AppContent />
+      </TokenProvider>
     </LanguageProvider>
   );
 }

@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with cycle tracking settings, token balance, and streak data.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 150 },
+        "tokens": { "type": "number" },
+        "streak": { "type": "number" },
+        "lastActiveDate": { "type": "string", "maxLength": 30 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["userId", "name", "email", "tokens", "streak"]
+    },
+    "TokenTransaction": {
+      "title": "TokenTransaction",
+      "description": "Record of earned or spent Sakhi Tokens.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "amount": { "type": "number" },
+        "type": { "type": "string", "enum": ["earned", "spent"] },
+        "category": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["userId", "title", "amount", "type", "category"]
+    },
+    "CareActivityLog": {
+      "title": "CareActivityLog",
+      "description": "Daily self-care completions like hydration, breathing, symptom logging.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "activity": { "type": "string", "maxLength": 60 },
+        "tokensAwarded": { "type": "number" },
+        "date": { "type": "string", "maxLength": 30 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["userId", "activity", "tokensAwarded", "date"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "UserProfile" },
+      "description": "User profile document containing tokens and cycle metadata."
+    },
+    "/users/{userId}/transactions/{transactionId}": {
+      "schema": { "$ref": "TokenTransaction" },
+      "description": "Subcollection of token earnings and redemptions for this user."
+    },
+    "/users/{userId}/care_logs/{logId}": {
+      "schema": { "$ref": "CareActivityLog" },
+      "description": "Daily care activities completed by the user."
+    }
+  }
+}
